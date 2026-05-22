@@ -1,0 +1,4 @@
+<!DOCTYPE html><html><body style="background:#111;color:#fff;text-align:center;font-family:sans-serif;padding-top:10%;">
+<h1>My Status</h1><div id="text" style="font-size:30px;color:#50fa7b;">Loading...</div>
+<script>fetch('./status.json?t='+Date.now()).then(r=>r.json()).then(d=>{document.getElementById('text').textContent=d.status;});</script>
+</body></html>
