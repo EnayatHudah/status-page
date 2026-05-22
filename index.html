@@ -7,130 +7,131 @@
         :root {
             --carbon: #121212;
             --card-bg: #1e1e1e;
-            --accent: #ADFF2F; /* GreenYellow */
+            --accent: #ADFF2F;
             --border: #2a2a2a;
         }
 
         body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            font-family: 'Inter', -apple-system, sans-serif; 
             background-color: var(--carbon); 
             color: #ffffff; 
-            margin: 0; 
-            padding: 20px;
-            line-height: 1.6;
+            margin: 0; padding: 20px;
         }
 
-        .container { max-width: 600px; margin: 0 auto; }
+        .container { max-width: 600px; margin: 0 auto; text-align: center; }
 
+        /* Loading State Styling */
+        #loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 50vh;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(173, 255, 47, 0.1);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .loading-text { color: var(--accent); font-weight: bold; letter-spacing: 2px; font-size: 0.9rem; }
+
+        /* Main Content (Hidden initially) */
+        #main-content { display: none; animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Existing Smooth Styles */
         .restock-banner { 
-            background: rgba(255, 204, 0, 0.1); 
-            color: #ffcc00; 
-            padding: 10px 20px; 
-            margin-bottom: 30px; 
-            border-radius: 100px; 
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: 1px solid rgba(255, 204, 0, 0.2);
+            background: rgba(255, 204, 0, 0.1); color: #ffcc00; 
+            padding: 10px 20px; margin-bottom: 30px; border-radius: 100px; 
+            font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(255, 204, 0, 0.2);
             display: inline-block;
         }
 
-        h1 { font-size: 1.2rem; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 30px; }
+        h1 { font-size: 1.1rem; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 30px; }
 
-        /* The Modern Card Style */
         .stock-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .stock-item:hover {
-            border-color: #444;
-            transform: translateY(-2px);
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 16px; padding: 20px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .item-info { text-align: left; }
         .item-name { font-weight: 600; font-size: 1rem; display: block; margin-bottom: 4px; }
-        .item-status { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
-
-        /* Glowing Status Dots */
+        
         .status-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
         .in .status-dot { background-color: #00ff88; box-shadow: 0 0 10px #00ff88; }
         .out .status-dot { background-color: #ff4444; box-shadow: 0 0 10px #ff4444; }
-        .in { color: #00ff88; }
-        .out { color: #ff4444; opacity: 0.7; }
+        .in { color: #00ff88; font-size: 0.75rem; text-transform: uppercase; }
+        .out { color: #ff4444; font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; }
 
-        .price { 
-            color: var(--accent); 
-            font-family: 'Courier New', monospace; 
-            font-weight: bold; 
-            font-size: 1.1rem;
-            background: rgba(173, 255, 47, 0.05);
-            padding: 8px 12px;
-            border-radius: 8px;
-        }
-
-        /* Pinned Style */
+        .price { color: var(--accent); font-family: monospace; font-weight: bold; font-size: 1.1rem; }
         .pinned { border: 1px solid rgba(255, 204, 0, 0.3); background: rgba(255, 255, 255, 0.03); }
 
         .footer { margin-top: 60px; padding: 20px; color: #555; font-size: 0.8rem; }
-        .footer a { color: var(--accent); text-decoration: none; opacity: 0.8; }
+        .footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="restock-banner">NEXT RESTOCK: 6PM BST NEXT WORKING DAY</div>
-        <h1>Live Inventory</h1>
+        <div id="loader">
+            <div class="spinner"></div>
+            <div class="loading-text">CHECKING STOCK...</div>
+        </div>
 
-        <div id="list">
-            </div>
-
-        <div class="footer">
-            INQUIRIES: <a href="mailto:info@enayathudah.uk">info@enayathudah.uk</a>
+        <div id="main-content">
+            <div class="restock-banner">NEXT RESTOCK: 6PM BST NEXT WORKING DAY</div>
+            <h1>Live Inventory</h1>
+            <div id="list"></div>
+            <div class="footer">INQUIRIES: <a href="mailto:info@enayathudah.uk">info@enayathudah.uk</a></div>
         </div>
     </div>
 
     <script>
-        fetch('stock.json')
-            .then(res => res.json())
-            .then(data => {
-                data.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+        // Wait 1 second (1000ms) then show the data
+        setTimeout(() => {
+            fetch('stock.json')
+                .then(res => res.json())
+                .then(data => {
+                    data.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
-                let html = '';
-                
-                // PINNED ITEM: Cooldown Reset
-                html += `
-                <div class="stock-item pinned">
-                    <div class="item-info">
-                        <span class="item-name">📌 Cooldown Reset</span>
-                        <div class="item-status in"><span class="status-dot"></span>Active</div>
-                    </div>
-                    <div class="price">£1.00</div>
-                </div>`;
-
-                // DATA ITEMS
-                data.forEach(item => {
-                    const isStock = item.stock === 'YES';
-                    html += `
-                    <div class="stock-item">
+                    let html = `
+                    <div class="stock-item pinned">
                         <div class="item-info">
-                            <span class="item-name">${item.name}</span>
-                            <div class="item-status ${isStock ? 'in' : 'out'}">
-                                <span class="status-dot"></span>
-                                ${isStock ? 'In Stock' : 'Out of Stock'}
-                            </div>
+                            <span class="item-name">📌 Cooldown Reset</span>
+                            <div class="in"><span class="status-dot"></span>Active</div>
                         </div>
-                        <div class="price">${item.price}</div>
+                        <div class="price">£1.00</div>
                     </div>`;
+
+                    data.forEach(item => {
+                        const isStock = item.stock === 'YES';
+                        html += `
+                        <div class="stock-item">
+                            <div class="item-info">
+                                <span class="item-name">${item.name}</span>
+                                <div class="${isStock ? 'in' : 'out'}">
+                                    <span class="status-dot"></span>
+                                    ${isStock ? 'In Stock' : 'Out of Stock'}
+                                </div>
+                            </div>
+                            <div class="price">${item.price}</div>
+                        </div>`;
+                    });
+
+                    document.getElementById('list').innerHTML = html;
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
                 });
-                document.getElementById('list').innerHTML = html;
-            });
+        }, 1000); 
     </script>
 </body>
 </html>
