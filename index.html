@@ -32,7 +32,6 @@
         .stock-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; }
         .item-info { text-align: left; display: flex; align-items: center; gap: 12px; }
         
-        /* The Red ! Box */
         .warn-icon { background: var(--warning); color: white; width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
 
         .item-name { font-weight: 600; font-size: 1rem; display: block; }
@@ -44,9 +43,8 @@
 
         .price { color: var(--accent); font-family: monospace; font-weight: bold; font-size: 1.1rem; }
 
-        /* The Dropdown Detail */
-        .item-detail { display: none; background: #161616; margin-top: -15px; margin-bottom: 15px; border-radius: 0 0 16px 16px; padding: 20px; border: 1px solid var(--border); border-top: none; text-align: left; font-size: 0.85rem; color: #aaa; }
-        .price-change-text { color: var(--warning); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .item-detail { display: none; background: #161616; margin-top: -15px; margin-bottom: 15px; border-radius: 0 0 16px 16px; padding: 20px; border: 1px solid var(--border); border-top: none; text-align: left; font-size: 0.85rem; color: #aaa; line-height: 1.5; }
+        .price-change-text { color: var(--warning); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px; }
 
         .pinned { border: 1px solid rgba(255, 204, 0, 0.3); background: rgba(255, 255, 255, 0.03); margin-bottom: 25px; }
         .footer { margin-top: 60px; padding: 20px; color: #555; font-size: 0.8rem; }
@@ -80,14 +78,12 @@
         function toggleDetail(id) {
             const el = document.getElementById('detail-' + id);
             const isVisible = el.style.display === 'block';
-            // Close all others
             document.querySelectorAll('.item-detail').forEach(d => d.style.display = 'none');
-            // Toggle current
             if (el) el.style.display = isVisible ? 'none' : 'block';
         }
 
         function parsePrice(priceStr) {
-            if (priceStr.includes('CONTACT')) return 999999;
+            if (priceStr.includes('%') || priceStr.includes('CONTACT')) return 999999;
             return parseFloat(priceStr.replace(/[£,]/g, ''));
         }
 
@@ -100,8 +96,9 @@
 
             data.forEach((item, index) => {
                 const isStock = item.stock === 'YES';
-                // Check for name match exactly
                 const isGreggs = item.name.trim() === "Greggs Account"; 
+                // Pull description from JSON or use fallback
+                const description = item.desc || "Product information currently being updated.";
                 
                 html += `
                 <div class="stock-item" onclick="toggleDetail(${index})">
@@ -115,7 +112,8 @@
                     <div class="price">${item.price}</div>
                 </div>
                 <div class="item-detail" id="detail-${index}">
-                    ${isGreggs ? '<span class="price-change-text">PRICE UPDATE:</span> This item will increase from 35p to 50p on June 7th.' : 'Inventory item details verified.'}
+                    ${isGreggs ? '<span class="price-change-text">PRICE UPDATE:</span> This item will increase from 35p to 50p on June 7th.<br>' : ''}
+                    ${description}
                 </div>`;
             });
             document.getElementById('list').innerHTML = html;
@@ -130,15 +128,12 @@
             renderItems(sorted);
         }
 
-        // Fetch data
         setTimeout(() => {
             fetch('stock.json').then(res => res.json()).then(data => {
                 stockData = data;
                 updateDisplay('name');
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-            }).catch(err => {
-                document.getElementById('loader').innerHTML = '<div class="loading-text">ERROR LOADING DATA</div>';
             });
         }, 1000); 
     </script>
