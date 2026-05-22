@@ -2,10 +2,10 @@
   { 
     "name": "Greggs Account", 
     "price": "£0.35", 
-    "stock": "YES" 
+    "stock": "NO" 
   },
   { 
-    "name": "Emergency Train Ticket", 
+    "name": "Fast Train Ticket Generation", 
     "price": "£3.00", 
     "stock": "YES" 
   },
@@ -16,7 +16,17 @@
   },
   { 
     "name": "Greggs GiftCard", 
-    "price": "CONTACT HOST FOR INFO", 
+    "price": "CONTACT HOST", 
     "stock": "NO" 
+  },
+  { 
+    "name": "Voxi QR", 
+    "price": "£5.00", 
+    "stock": "YES" 
+  },
+  { 
+    "name": "Greggs Reserved Account", 
+    "price": "£1.50", 
+    "stock": "YES" 
   }
 ]
