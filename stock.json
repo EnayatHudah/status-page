@@ -1,0 +1,22 @@
+[
+  { 
+    "name": "Greggs Account", 
+    "price": "£0.35", 
+    "stock": "YES" 
+  },
+  { 
+    "name": "Emergency Train Ticket", 
+    "price": "£3.00", 
+    "stock": "YES" 
+  },
+  { 
+    "name": "£10 Off Ride", 
+    "price": "£2.50", 
+    "stock": "YES" 
+  },
+  { 
+    "name": "Greggs GiftCard", 
+    "price": "CONTACT HOST FOR INFO", 
+    "stock": "NO" 
+  }
+]
