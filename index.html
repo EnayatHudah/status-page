@@ -1,4 +1,41 @@
-<!DOCTYPE html><html><body style="background:#111;color:#fff;text-align:center;font-family:sans-serif;padding-top:10%;">
-<h1>My Status</h1><div id="text" style="font-size:30px;color:#50fa7b;">Loading...</div>
-<script>fetch('./status.json?t='+Date.now()).then(r=>r.json()).then(d=>{document.getElementById('text').textContent=d.status;});</script>
-</body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9; }
+        .restock-banner { background: #333; color: white; padding: 10px; margin-bottom: 20px; border-radius: 5px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { border: 1px solid #ddd; padding: 15px; }
+        th { background: #007bff; color: white; }
+        .in { color: green; font-weight: bold; }
+        .out { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="restock-banner">
+        Next Predicted Restock: 6PM BST Next Working Day
+    </div>
+
+    <h1>Current Stock</h1>
+    <div id="list">Loading...</div>
+
+    <script>
+        fetch('stock.json')
+            .then(res => res.json())
+            .then(data => {
+                let html = '<table><tr><th>Item</th><th>Price</th><th>In Stock?</th></tr>';
+                data.forEach(item => {
+                    html += `<tr>
+                        <td>${item.name}</td>
+                        <td>${item.price}</td>
+                        <td class="${item.stock == 'YES' ? 'in' : 'out'}">${item.stock}</td>
+                    </tr>`;
+                });
+                document.getElementById('list').innerHTML = html + '</table>';
+            });
+    </script>
+</body>
+</html>
