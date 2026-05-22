@@ -2,31 +2,37 @@
   { 
     "name": "Greggs Account", 
     "price": "£0.35", 
-    "stock": "NO" 
+    "stock": "NO",
+    "desc": "Greggs Account with Sweet Treat & Hot/Cold Drink"
   },
   { 
     "name": "Fast Train Ticket Generation", 
     "price": "£3.00", 
-    "stock": "YES" 
+    "stock": "YES",
+    "desc": "Required ASAP. Does not include ticket price unless tickets are under £5."
   },
   { 
     "name": "£10 Off Ride", 
     "price": "£2.50", 
-    "stock": "YES" 
+    "stock": "YES",
+    "desc": "Valid for a single trip. Apply at checkout in the app."
   },
   { 
     "name": "Greggs GiftCard", 
-    "price": "CONTACT HOST", 
-    "stock": "NO" 
+    "price": "Contact Host For Info (70% of value)", 
+    "stock": "YES",
+    "desc": "Gift card balance varies. Please message for current availability."
   },
   { 
     "name": "Voxi QR", 
     "price": "£5.00", 
-    "stock": "YES" 
+    "stock": "YES",
+    "desc": "Scan the QR code to activate your Voxi data bundle."
   },
   { 
     "name": "Greggs Reserved Account", 
     "price": "£1.50", 
-    "stock": "YES" 
+    "stock": "YES",
+    "desc": "Greggs account reserved (Bypasses Out Of Stock Error)"
   }
 ]
