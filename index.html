@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Stock Portal</title>
+    <title>STOCK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        /* Carbon Dark Theme */
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             text-align: center; 
             padding: 20px; 
-            background-color: #121212; /* Carbon Black */
+            background-color: #121212; 
             color: #e0e0e0; 
             margin: 0;
         }
@@ -19,7 +18,7 @@
             color: #ffcc00; 
             padding: 14px 25px; 
             margin: 20px 0 40px 0; 
-            border-radius: 50px; /* Pill shape */
+            border-radius: 50px; 
             font-weight: 600;
             border: 1px solid #333;
             display: inline-block;
@@ -36,7 +35,7 @@
             border-collapse: separate; 
             border-spacing: 0;
             background: #1a1a1a; 
-            border-radius: 20px; /* Extra smooth */
+            border-radius: 20px; 
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 1px solid #282828;
@@ -52,18 +51,30 @@
             letter-spacing: 1.5px; 
         }
 
-        /* Price Colour: GreenYellow */
         .price-tag { 
             color: #ADFF2F; 
             font-weight: bold; 
-            font-family: 'Courier New', Courier, monospace; /* Makes it look like a digital tag */
+            font-family: 'Courier New', Courier, monospace; 
             font-size: 1.1rem;
         }
 
         .in { color: #00ff88; font-weight: bold; letter-spacing: 0.5px; }
         .out { color: #ff4444; font-weight: bold; opacity: 0.8; }
 
-        /* Remove border from last row */
+        .footer {
+            margin-top: 50px;
+            padding: 30px;
+            border-top: 1px solid #282828;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #ADFF2F;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
         tr:last-child td { border-bottom: none; }
     </style>
 </head>
@@ -76,11 +87,24 @@
     <h1>LIVE INVENTORY</h1>
     <div id="list">Loading...</div>
 
+    <div class="footer">
+        For inquiries: <a href="mailto:info@enayathudah.uk">info@enayathudah.uk</a>
+    </div>
+
     <script>
         fetch('stock.json')
             .then(res => res.json())
             .then(data => {
                 let html = '<table><tr><th>Item Description</th><th>Price</th><th>Availability</th></tr>';
+                
+                // Add the Cooldown Reset at the top manually
+                html += `<tr>
+                    <td>Cooldown Reset</td>
+                    <td class="price-tag">£1.00</td>
+                    <td class="in">● ACTIVE</td>
+                </tr>`;
+
+                // Add the rest of the items from your JSON
                 data.forEach(item => {
                     html += `<tr>
                         <td>${item.name}</td>
