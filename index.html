@@ -4,115 +4,132 @@
     <title>STOCK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            text-align: center; 
-            padding: 20px; 
-            background-color: #121212; 
-            color: #e0e0e0; 
-            margin: 0;
+        :root {
+            --carbon: #121212;
+            --card-bg: #1e1e1e;
+            --accent: #ADFF2F; /* GreenYellow */
+            --border: #2a2a2a;
         }
+
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background-color: var(--carbon); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; }
 
         .restock-banner { 
-            background: #1e1e1e; 
+            background: rgba(255, 204, 0, 0.1); 
             color: #ffcc00; 
-            padding: 14px 25px; 
-            margin: 20px 0 40px 0; 
-            border-radius: 50px; 
+            padding: 10px 20px; 
+            margin-bottom: 30px; 
+            border-radius: 100px; 
+            font-size: 0.85rem;
             font-weight: 600;
-            border: 1px solid #333;
+            border: 1px solid rgba(255, 204, 0, 0.2);
             display: inline-block;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        h1 { font-weight: 300; letter-spacing: 2px; color: #ffffff; }
+        h1 { font-size: 1.2rem; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 30px; }
 
-        table { 
-            width: 100%; 
-            max-width: 900px;
-            margin: 0 auto;
-            border-collapse: separate; 
-            border-spacing: 0;
-            background: #1a1a1a; 
-            border-radius: 20px; 
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #282828;
+        /* The Modern Card Style */
+        .stock-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
-        th, td { padding: 20px; text-align: left; border-bottom: 1px solid #282828; }
-
-        th { 
-            background: #252525; 
-            color: #aaa; 
-            text-transform: uppercase; 
-            font-size: 0.75rem; 
-            letter-spacing: 1.5px; 
+        .stock-item:hover {
+            border-color: #444;
+            transform: translateY(-2px);
         }
 
-        .price-tag { 
-            color: #ADFF2F; 
+        .item-info { text-align: left; }
+        .item-name { font-weight: 600; font-size: 1rem; display: block; margin-bottom: 4px; }
+        .item-status { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
+
+        /* Glowing Status Dots */
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
+        .in .status-dot { background-color: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .out .status-dot { background-color: #ff4444; box-shadow: 0 0 10px #ff4444; }
+        .in { color: #00ff88; }
+        .out { color: #ff4444; opacity: 0.7; }
+
+        .price { 
+            color: var(--accent); 
+            font-family: 'Courier New', monospace; 
             font-weight: bold; 
-            font-family: 'Courier New', Courier, monospace; 
             font-size: 1.1rem;
+            background: rgba(173, 255, 47, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
         }
 
-        .in { color: #00ff88; font-weight: bold; letter-spacing: 0.5px; }
-        .out { color: #ff4444; font-weight: bold; opacity: 0.8; }
+        /* Pinned Style */
+        .pinned { border: 1px solid rgba(255, 204, 0, 0.3); background: rgba(255, 255, 255, 0.03); }
 
-        .footer {
-            margin-top: 50px;
-            padding: 30px;
-            border-top: 1px solid #282828;
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .footer a {
-            color: #ADFF2F;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        tr:last-child td { border-bottom: none; }
+        .footer { margin-top: 60px; padding: 20px; color: #555; font-size: 0.8rem; }
+        .footer a { color: var(--accent); text-decoration: none; opacity: 0.8; }
     </style>
 </head>
 <body>
 
-    <div class="restock-banner">
-        Next Predicted Restock: 6PM BST Next Working Day
-    </div>
+    <div class="container">
+        <div class="restock-banner">NEXT RESTOCK: 6PM BST NEXT WORKING DAY</div>
+        <h1>Live Inventory</h1>
 
-    <h1>LIVE INVENTORY</h1>
-    <div id="list">Loading...</div>
+        <div id="list">
+            </div>
 
-    <div class="footer">
-        For inquiries: <a href="mailto:info@enayathudah.uk">info@enayathudah.uk</a>
+        <div class="footer">
+            INQUIRIES: <a href="mailto:info@enayathudah.uk">info@enayathudah.uk</a>
+        </div>
     </div>
 
     <script>
         fetch('stock.json')
             .then(res => res.json())
             .then(data => {
-                let html = '<table><tr><th>Item Description</th><th>Price</th><th>Availability</th></tr>';
-                
-                // Add the Cooldown Reset at the top manually
-                html += `<tr>
-                    <td>Cooldown Reset</td>
-                    <td class="price-tag">£1.00</td>
-                    <td class="in">● ACTIVE</td>
-                </tr>`;
+                data.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
-                // Add the rest of the items from your JSON
+                let html = '';
+                
+                // PINNED ITEM: Cooldown Reset
+                html += `
+                <div class="stock-item pinned">
+                    <div class="item-info">
+                        <span class="item-name">📌 Cooldown Reset</span>
+                        <div class="item-status in"><span class="status-dot"></span>Active</div>
+                    </div>
+                    <div class="price">£1.00</div>
+                </div>`;
+
+                // DATA ITEMS
                 data.forEach(item => {
-                    html += `<tr>
-                        <td>${item.name}</td>
-                        <td class="price-tag">${item.price}</td>
-                        <td class="${item.stock == 'YES' ? 'in' : 'out'}">${item.stock == 'YES' ? '● IN STOCK' : '○ OUT OF STOCK'}</td>
-                    </tr>`;
+                    const isStock = item.stock === 'YES';
+                    html += `
+                    <div class="stock-item">
+                        <div class="item-info">
+                            <span class="item-name">${item.name}</span>
+                            <div class="item-status ${isStock ? 'in' : 'out'}">
+                                <span class="status-dot"></span>
+                                ${isStock ? 'In Stock' : 'Out of Stock'}
+                            </div>
+                        </div>
+                        <div class="price">${item.price}</div>
+                    </div>`;
                 });
-                document.getElementById('list').innerHTML = html + '</table>';
+                document.getElementById('list').innerHTML = html;
             });
     </script>
 </body>
