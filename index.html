@@ -20,34 +20,16 @@
 
         .container { max-width: 600px; margin: 0 auto; text-align: center; }
 
-        /* Loading State Styling */
-        #loader {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 50vh;
-        }
-
-        .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(173, 255, 47, 0.1);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 15px;
-        }
-
+        /* Loader */
+        #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; }
+        .spinner { width: 30px; height: 30px; border: 3px solid rgba(173, 255, 47, 0.1); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         .loading-text { color: var(--accent); font-weight: bold; letter-spacing: 2px; font-size: 0.9rem; }
 
-        /* Main Content (Hidden initially) */
+        /* Main Content */
         #main-content { display: none; animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Existing Smooth Styles */
         .restock-banner { 
             background: rgba(255, 204, 0, 0.1); color: #ffcc00; 
             padding: 10px 20px; margin-bottom: 30px; border-radius: 100px; 
@@ -55,7 +37,16 @@
             display: inline-block;
         }
 
-        h1 { font-size: 1.1rem; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 30px; }
+        h1 { font-size: 1.1rem; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 15px; }
+
+        /* Sort Buttons */
+        .sort-controls { margin-bottom: 25px; display: flex; justify-content: center; gap: 10px; }
+        .sort-btn {
+            background: #1a1a1a; border: 1px solid #333; color: #888;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer;
+            font-size: 0.75rem; font-weight: 600; transition: all 0.2s;
+        }
+        .sort-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(173, 255, 47, 0.05); }
 
         .stock-item {
             background: var(--card-bg); border: 1px solid var(--border);
@@ -73,7 +64,7 @@
         .out { color: #ff4444; font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; }
 
         .price { color: var(--accent); font-family: monospace; font-weight: bold; font-size: 1.1rem; }
-        .pinned { border: 1px solid rgba(255, 204, 0, 0.3); background: rgba(255, 255, 255, 0.03); }
+        .pinned { border: 1px solid rgba(255, 204, 0, 0.3); background: rgba(255, 255, 255, 0.03); margin-bottom: 25px; }
 
         .footer { margin-top: 60px; padding: 20px; color: #555; font-size: 0.8rem; }
         .footer a { color: var(--accent); text-decoration: none; }
@@ -90,44 +81,73 @@
         <div id="main-content">
             <div class="restock-banner">NEXT RESTOCK: 6PM BST NEXT WORKING DAY</div>
             <h1>Live Inventory</h1>
+            
+            <div class="sort-controls">
+                <button class="sort-btn active" id="sort-name" onclick="updateDisplay('name')">SORT A-Z</button>
+                <button class="sort-btn" id="sort-price" onclick="updateDisplay('price')">SORT PRICE</button>
+            </div>
+
             <div id="list"></div>
             <div class="footer">INQUIRIES: <a href="mailto:info@enayathudah.uk">info@enayathudah.uk</a></div>
         </div>
     </div>
 
     <script>
-        // Wait 1 second (1000ms) then show the data
+        let stockData = [];
+
+        function parsePrice(priceStr) {
+            if (priceStr.includes('CONTACT')) return 999999; // Put "Contact" items at bottom
+            return parseFloat(priceStr.replace(/[£,]/g, ''));
+        }
+
+        function renderItems(data) {
+            let html = `
+            <div class="stock-item pinned">
+                <div class="item-info">
+                    <span class="item-name">📌 Cooldown Reset</span>
+                    <div class="in"><span class="status-dot"></span>Active</div>
+                </div>
+                <div class="price">£1.00</div>
+            </div>`;
+
+            data.forEach(item => {
+                const isStock = item.stock === 'YES';
+                html += `
+                <div class="stock-item">
+                    <div class="item-info">
+                        <span class="item-name">${item.name}</span>
+                        <div class="${isStock ? 'in' : 'out'}">
+                            <span class="status-dot"></span>
+                            ${isStock ? 'In Stock' : 'Out of Stock'}
+                        </div>
+                    </div>
+                    <div class="price">${item.price}</div>
+                </div>`;
+            });
+            document.getElementById('list').innerHTML = html;
+        }
+
+        function updateDisplay(criteria) {
+            // Update button styles
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('sort-' + criteria).classList.add('active');
+
+            // Sort logic
+            let sorted = [...stockData];
+            if (criteria === 'name') {
+                sorted.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+            } else {
+                sorted.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+            }
+            renderItems(sorted);
+        }
+
         setTimeout(() => {
             fetch('stock.json')
                 .then(res => res.json())
                 .then(data => {
-                    data.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
-
-                    let html = `
-                    <div class="stock-item pinned">
-                        <div class="item-info">
-                            <span class="item-name">📌 Cooldown Reset</span>
-                            <div class="in"><span class="status-dot"></span>Active</div>
-                        </div>
-                        <div class="price">£1.00</div>
-                    </div>`;
-
-                    data.forEach(item => {
-                        const isStock = item.stock === 'YES';
-                        html += `
-                        <div class="stock-item">
-                            <div class="item-info">
-                                <span class="item-name">${item.name}</span>
-                                <div class="${isStock ? 'in' : 'out'}">
-                                    <span class="status-dot"></span>
-                                    ${isStock ? 'In Stock' : 'Out of Stock'}
-                                </div>
-                            </div>
-                            <div class="price">${item.price}</div>
-                        </div>`;
-                    });
-
-                    document.getElementById('list').innerHTML = html;
+                    stockData = data;
+                    updateDisplay('name'); // Default sort
                     document.getElementById('loader').style.display = 'none';
                     document.getElementById('main-content').style.display = 'block';
                 });
