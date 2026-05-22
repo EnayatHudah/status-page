@@ -19,9 +19,9 @@
   },
   { 
     "name": "Greggs GiftCard", 
-    "price": "Contact Host For Info (70% of value)", 
+    "price": "75% VALUE", 
     "stock": "YES",
-    "desc": "Gift card balance varies. Please message for current availability."
+    "desc": "Gift card balance varies. Price is calculated as 75% of the total balance."
   },
   { 
     "name": "Voxi QR", 
@@ -33,6 +33,6 @@
     "name": "Greggs Reserved Account", 
     "price": "£1.50", 
     "stock": "YES",
-    "desc": "Greggs account reserved (Bypasses Out Of Stock Error)"
+    "desc": "Same as Greggs Account —> Bypasses cooldown"
   }
 ]
