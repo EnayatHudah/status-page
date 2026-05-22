@@ -9,65 +9,52 @@
             --card-bg: #1e1e1e;
             --accent: #ADFF2F;
             --border: #2a2a2a;
+            --warning: #ff4444;
         }
 
-        body { 
-            font-family: 'Inter', -apple-system, sans-serif; 
-            background-color: var(--carbon); 
-            color: #ffffff; 
-            margin: 0; padding: 20px;
-        }
-
+        body { font-family: 'Inter', sans-serif; background-color: var(--carbon); color: #ffffff; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; text-align: center; }
 
         /* Loader */
         #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; }
         .spinner { width: 30px; height: 30px; border: 3px solid rgba(173, 255, 47, 0.1); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { color: var(--accent); font-weight: bold; letter-spacing: 2px; font-size: 0.9rem; }
 
-        /* Main Content */
+        /* Main Layout */
         #main-content { display: none; animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .restock-banner { 
-            background: rgba(255, 204, 0, 0.1); color: #ffcc00; 
-            padding: 10px 20px; margin-bottom: 30px; border-radius: 100px; 
-            font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(255, 204, 0, 0.2);
-            display: inline-block;
-        }
-
+        .restock-banner { background: rgba(255, 204, 0, 0.1); color: #ffcc00; padding: 10px 20px; margin-bottom: 30px; border-radius: 100px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(255, 204, 0, 0.2); display: inline-block; }
         h1 { font-size: 1.1rem; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 15px; }
 
-        /* Sort Buttons */
+        /* Sort Controls */
         .sort-controls { margin-bottom: 25px; display: flex; justify-content: center; gap: 10px; }
-        .sort-btn {
-            background: #1a1a1a; border: 1px solid #333; color: #888;
-            padding: 8px 15px; border-radius: 8px; cursor: pointer;
-            font-size: 0.75rem; font-weight: 600; transition: all 0.2s;
-        }
-        .sort-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(173, 255, 47, 0.05); }
+        .sort-btn { background: #1a1a1a; border: 1px solid #333; color: #888; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+        .sort-btn.active { border-color: var(--accent); color: var(--accent); }
 
-        .stock-item {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 16px; padding: 20px; margin-bottom: 12px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .item-info { text-align: left; }
-        .item-name { font-weight: 600; font-size: 1rem; display: block; margin-bottom: 4px; }
+        /* Stock Cards */
+        .stock-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .item-info { text-align: left; display: flex; align-items: center; gap: 12px; }
         
+        /* Custom Red ! Icon */
+        .warn-icon { background: var(--warning); color: white; width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; flex-shrink: 0; }
+
+        .item-name { font-weight: 600; font-size: 1rem; display: block; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
         .in .status-dot { background-color: #00ff88; box-shadow: 0 0 10px #00ff88; }
-        .out .status-dot { background-color: #ff4444; box-shadow: 0 0 10px #ff4444; }
-        .in { color: #00ff88; font-size: 0.75rem; text-transform: uppercase; }
-        .out { color: #ff4444; font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; }
+        .out .status-dot { background-color: #ff4444; }
+        .in { color: #00ff88; font-size: 0.7rem; text-transform: uppercase; margin-top: 4px;}
+        .out { color: #ff4444; font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; margin-top: 4px;}
 
         .price { color: var(--accent); font-family: monospace; font-weight: bold; font-size: 1.1rem; }
-        .pinned { border: 1px solid rgba(255, 204, 0, 0.3); background: rgba(255, 255, 255, 0.03); margin-bottom: 25px; }
 
+        /* Dropdown Detail */
+        .item-detail { display: none; background: #161616; margin-top: -15px; margin-bottom: 15px; border-radius: 0 0 16px 16px; padding: 20px; border: 1px solid var(--border); border-top: none; text-align: left; font-size: 0.85rem; color: #aaa; animation: slideDown 0.2s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .price-change { color: var(--warning); font-weight: bold; }
+
+        .pinned { border: 1px solid rgba(255, 204, 0, 0.3); background: rgba(255, 255, 255, 0.03); margin-bottom: 25px; }
         .footer { margin-top: 60px; padding: 20px; color: #555; font-size: 0.8rem; }
-        .footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
@@ -83,74 +70,75 @@
             <h1>Live Inventory</h1>
             
             <div class="sort-controls">
-                <button class="sort-btn active" id="sort-name" onclick="updateDisplay('name')">SORT A-Z</button>
-                <button class="sort-btn" id="sort-price" onclick="updateDisplay('price')">SORT PRICE</button>
+                <button class="sort-btn active" id="sort-name" onclick="updateDisplay('name')">A-Z</button>
+                <button class="sort-btn" id="sort-price" onclick="updateDisplay('price')">PRICE</button>
             </div>
 
             <div id="list"></div>
-            <div class="footer">INQUIRIES: <a href="mailto:info@enayathudah.uk">info@enayathudah.uk</a></div>
+            <div class="footer">INQUIRIES: <a href="mailto:info@enayathudah.uk" style="color:var(--accent); text-decoration:none;">info@enayathudah.uk</a></div>
         </div>
     </div>
 
     <script>
         let stockData = [];
 
+        function toggleDetail(id) {
+            const el = document.getElementById('detail-' + id);
+            const isVisible = el.style.display === 'block';
+            document.querySelectorAll('.item-detail').forEach(d => d.style.display = 'none');
+            el.style.display = isVisible ? 'none' : 'block';
+        }
+
         function parsePrice(priceStr) {
-            if (priceStr.includes('CONTACT')) return 999999; // Put "Contact" items at bottom
+            if (priceStr.includes('CONTACT')) return 999999;
             return parseFloat(priceStr.replace(/[£,]/g, ''));
         }
 
         function renderItems(data) {
             let html = `
             <div class="stock-item pinned">
-                <div class="item-info">
-                    <span class="item-name">📌 Cooldown Reset</span>
-                    <div class="in"><span class="status-dot"></span>Active</div>
-                </div>
+                <div class="item-info"><span class="item-name">📌 Cooldown Reset</span></div>
                 <div class="price">£1.00</div>
             </div>`;
 
-            data.forEach(item => {
+            data.forEach((item, index) => {
                 const isStock = item.stock === 'YES';
+                const hasWarning = item.name === "Greggs Account"; // Trigger for the red !
+                
                 html += `
-                <div class="stock-item">
+                <div class="stock-item" onclick="toggleDetail(${index})">
                     <div class="item-info">
-                        <span class="item-name">${item.name}</span>
-                        <div class="${isStock ? 'in' : 'out'}">
-                            <span class="status-dot"></span>
-                            ${isStock ? 'In Stock' : 'Out of Stock'}
+                        ${hasWarning ? '<div class="warn-icon">!</div>' : ''}
+                        <div>
+                            <span class="item-name">${item.name}</span>
+                            <div class="${isStock ? 'in' : 'out'}"><span class="status-dot"></span>${isStock ? 'In Stock' : 'Out of Stock'}</div>
                         </div>
                     </div>
                     <div class="price">${item.price}</div>
+                </div>
+                <div class="item-detail" id="detail-${index}">
+                    ${hasWarning ? '⚠️ <span class="price-change">Price Update:</span> This item will increase from 35p —> 50p on June 7th.' : 'No additional information for this item.'}
                 </div>`;
             });
             document.getElementById('list').innerHTML = html;
         }
 
         function updateDisplay(criteria) {
-            // Update button styles
             document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('sort-' + criteria).classList.add('active');
-
-            // Sort logic
             let sorted = [...stockData];
-            if (criteria === 'name') {
-                sorted.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
-            } else {
-                sorted.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
-            }
+            if (criteria === 'name') { sorted.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true })); }
+            else { sorted.sort((a, b) => parsePrice(a.price) - parsePrice(b.price)); }
             renderItems(sorted);
         }
 
         setTimeout(() => {
-            fetch('stock.json')
-                .then(res => res.json())
-                .then(data => {
-                    stockData = data;
-                    updateDisplay('name'); // Default sort
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('main-content').style.display = 'block';
-                });
+            fetch('stock.json').then(res => res.json()).then(data => {
+                stockData = data;
+                updateDisplay('name');
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            });
         }, 1000); 
     </script>
 </body>
