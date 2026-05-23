@@ -340,8 +340,6 @@
             
             function updateClock() {
                 const now = new Date();
-                
-                // Formatter to read the user's current date inside the London timezone context
                 const londonFormatter = new Intl.DateTimeFormat('en-US', {
                     timeZone: 'Europe/London',
                     year: 'numeric', month: 'numeric', day: 'numeric',
@@ -351,21 +349,13 @@
                 const parts = londonFormatter.formatToParts(now);
                 const p = {}; parts.forEach(item => p[item.type] = item.value);
                 
-                // Determine whether London is in daylight savings (BST = UTC+1) or winter time (GMT = UTC+0)
-                // We create a test date using the parsed components assuming UTC, then check its offset
-                const sampleInLondon = new Date(`${p.year}-${p.month}-${p.day}T18:00:00Z`);
-                
-                // Use Intl to find the exact target timestamp safely
-                // 17:00 UTC = 18:00 BST. 18:00 UTC = 18:00 GMT. Let's compute precisely:
                 let targetDate = new Date(Date.UTC(p.year, p.month - 1, p.day, 17, 0, 0)); 
                 
-                // Verify if it's currently GMT season instead of BST season by examining standard local text
                 const isBST = londonFormatter.format(new Date(Date.UTC(p.year, p.month - 1, p.day, 12, 0, 0))).includes('13:');
                 if (!isBST) {
                     targetDate = new Date(Date.UTC(p.year, p.month - 1, p.day, 18, 0, 0));
                 }
 
-                // If 6PM London time has already passed today, push target to tomorrow
                 if (now >= targetDate) {
                     targetDate.setUTCDate(targetDate.getUTCDate() + 1);
                 }
@@ -426,11 +416,25 @@
                 
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
+                // Determine precise Cooldown Text based on specific item keywords
+                let cooldownText = 'COOLDOWN: 3 Hours Per Item'; // Global default backup
+                
                 if (nameLower.includes('gift card')) {
                     sText = 'CONTACT VERIFIED SALES ASSOCIATE'; 
                     sClass = 'status-contact'; 
                     dotHtml = '';
                     displayPrice = '75% Of Value';
+                    cooldownText = 'COOLDOWN: None';
+                } else if (nameLower.includes('train tickets') || nameLower.includes('fast ticket')) {
+                    cooldownText = 'COOLDOWN: None';
+                } else if (nameLower.includes('reserved')) {
+                    cooldownText = 'COOLDOWN: 30 Minutes';
+                } else if (nameLower.includes('greggs')) {
+                    cooldownText = 'COOLDOWN: 3 Hours';
+                } else if (nameLower.includes('ride') || nameLower.includes('off ride')) {
+                    cooldownText = 'COOLDOWN: 45 Minutes';
+                } else if (nameLower.includes('voxi')) {
+                    cooldownText = 'COOLDOWN: 12 Hours';
                 }
 
                 html += `
@@ -438,7 +442,7 @@
                     <div>
                         <div class="item-name">${item.name}</div>
                         <div class="status ${sClass}">${dotHtml}${sText}</div>
-                        <div class="item-cooldown">COOLDOWN: 3 Hours Per Item</div>
+                        <div class="item-cooldown">${cooldownText}</div>
                     </div>
                     <div class="price">${displayPrice}</div>
                 </div>
