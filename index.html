@@ -346,12 +346,16 @@
                 const nameLower = item.name.toLowerCase();
                 let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
                 let sClass = isStock ? 'status-available' : 'status-oos';
+                let displayPrice = item.price;
                 
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
-                // Specific match for gift cards update
+                // Handle changes for gift card matching items
                 if (nameLower.includes('gift card')) {
-                    sText = 'CONTACT VERIFIED SALES ASSOCIATE'; sClass = 'status-contact'; dotHtml = '';
+                    sText = 'CONTACT VERIFIED SALES ASSOCIATE'; 
+                    sClass = 'status-contact'; 
+                    dotHtml = '';
+                    displayPrice = '75% Of Value';
                 }
 
                 html += `
@@ -360,7 +364,7 @@
                         <div class="item-name">${item.name}</div>
                         <div class="status ${sClass}">${dotHtml}${sText}</div>
                     </div>
-                    <div class="price">${item.price}</div>
+                    <div class="price">${displayPrice}</div>
                 </div>
                 <div class="item-detail" id="detail-${index}">${item.desc}</div>`;
             });
