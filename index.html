@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockStatus | Live Inventory</title>
-    
+    <title>Inventory</title>
     <style>
         :root {
-            --bg: #0a0a0a;
-            --card-bg: #141414;
+            --bg: #121212; /* Carbon Black */
+            --card-bg: #1c1c1c;
             --accent: #00d4ff;
             --text-main: #ffffff;
-            --text-dim: #888888;
+            --text-dim: #666666;
             --in-stock: #00ff88;
             --out-stock: #ff4444;
         }
@@ -28,13 +27,110 @@
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             padding: 20px;
         }
 
-        /* Login Overlay Styles */
-        #login-overlay {
-            position: fixed;
+        /* Loader Screen */
+        #loader {
+            text-align: center;
+            margin-top: 150px;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Items List */
+        #list {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .stock-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid transparent;
+            transition: transform 0.1s;
+        }
+
+        .stock-item:active { transform: scale(0.98); }
+
+        .item-name { font-weight: 500; font-size: 1.05rem; }
+        .price { font-weight: 700; color: var(--accent); font-size: 1.1rem; }
+        
+        .status { font-size: 0.65rem; font-weight: 800; margin-top: 5px; letter-spacing: 0.5px; }
+        .in { color: var(--in-stock); }
+        .out { color: var(--out-stock); }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+        }
+
+        a { color: var(--text-main); text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="loader">CHECKING LIVE STOCK...</div>
+        
+        <div id="list"></div>
+
+        <div class="footer">
+            CONTACT: <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a><br>
+            REPLIES WITHIN 2-3 BUSINESS DAYS
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // Artificial delay to show the "Checking" screen
+            setTimeout(loadStock, 1200);
+        };
+
+        function loadStock() {
+            fetch('stock.json')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('list').style.display = 'block';
+                    renderItems(data);
+                })
+                .catch(err => {
+                    document.getElementById('loader').innerText = "CONNECTION ERROR";
+                });
+        }
+
+        function renderItems(data) {
+            let html = '';
+            data.forEach(item => {
+                const isStock = item.stock === 'YES';
+                html += `
+                <div class="stock-item">
+                    <div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="status ${isStock ? 'in' : 'out'}">${isStock ? 'AVAILABLE' : 'SOLD OUT'}</div>
+                    </div>
+                    <div class="price">${item.price}</div>
+                </div>`;
+            });
+            document.getElementById('list').innerHTML = html;
+        }
+    </script>
+</body>
+</html>            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9);
             display: flex; align-items: center; justify-content: center;
