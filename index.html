@@ -70,6 +70,38 @@
             border-radius: 20px;
         }
 
+        /* Sorting Controls Bar */
+        .sort-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+
+        .sort-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: all 0.2s ease;
+        }
+
+        .sort-btn:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            color: var(--text-main);
+        }
+
+        .sort-btn.active {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         /* Delivery Time Guarantee Banner */
         .delivery-notice {
             background: rgba(0, 255, 136, 0.06);
@@ -293,6 +325,13 @@
                 <div class="cooldown-info">COOLDOWN RESET: £1</div>
             </div>
 
+            <!-- Interactive Sorting Bar -->
+            <div class="sort-bar">
+                <button class="sort-btn active" id="btn-default" onclick="changeSort('default')">DEFAULT</button>
+                <button class="sort-btn" id="btn-price" onclick="changeSort('price')">SORT BY PRICE</button>
+                <button class="sort-btn" id="btn-az" onclick="changeSort('az')">SORT BY A-Z</button>
+            </div>
+
             <!-- Delivery Time Guarantee Banner -->
             <div class="delivery-notice">
                 ⏱ Guaranteed delivery time between 5-25 minutes or a refund promised!
@@ -330,6 +369,8 @@
 
     <script>
         let rawData = [];
+        let currentSort = 'default'; // Track the active filter
+
         window.onload = function() { 
             setTimeout(loadStock, 1200);
             startCountdown();
@@ -381,10 +422,13 @@
 
         function loadStock() {
             fetch('stock.json').then(res => res.json()).then(data => {
-                rawData = data.map(item => {
+                // Map out configurations and ensure specific text sanitization runs instantly
+                rawData = data.map((item, originalIndex) => {
                     if (item.name.toLowerCase().includes("fast ticket")) {
                         item.name = "Train tickets under £5";
                     }
+                    // Keep track of internal original order index for 'default' reset feature
+                    item.originalIndex = originalIndex;
                     return item;
                 });
                 document.getElementById('loader-container').style.display = 'none';
@@ -405,9 +449,43 @@
             el.style.display = isVis ? 'none' : 'block';
         }
 
+        // Helper function to turn price text strings (like "£0.25", "£1.50", "75% Of Value") into cleanly readable digits
+        function parsePriceNumeric(priceStr) {
+            if (!priceStr) return 0;
+            // Clean out text artifacts or currency symbols to leave trailing digits
+            let clean = priceStr.replace(/[^\d.]/g, '');
+            let parsed = parseFloat(clean);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        function changeSort(type) {
+            currentSort = type;
+            
+            // Handle visual button states inside navigation header elements
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            if(type === 'default') document.getElementById('btn-default').classList.add('active');
+            if(type === 'price') document.getElementById('btn-price').classList.add('active');
+            if(type === 'az') document.getElementById('btn-az').classList.add('active');
+            
+            render();
+        }
+
         function render() {
             let html = '';
-            rawData.forEach((item, index) => {
+            
+            // Clone our master dataset before executing an in-memory variable slice sort
+            let displayData = [...rawData];
+
+            if (currentSort === 'price') {
+                displayData.sort((a, b) => parsePriceNumeric(a.price) - parsePriceNumeric(b.price));
+            } else if (currentSort === 'az') {
+                displayData.sort((a, b) => a.name.localeCompare(b.name));
+            } else {
+                // Reset cleanly back to local file ordering sequencing rules
+                displayData.sort((a, b) => a.originalIndex - b.originalIndex);
+            }
+
+            displayData.forEach((item) => {
                 const isStock = item.stock === 'YES';
                 const nameLower = item.name.toLowerCase();
                 let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
@@ -416,8 +494,8 @@
                 
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
-                // Determine precise Cooldown Text based on specific item keywords
-                let cooldownText = 'COOLDOWN: 3 Hours Per Item'; // Global default backup
+                // Cooldown parsing loop handles string variables natively
+                let cooldownText = 'COOLDOWN: 3 Hours Per Item';
                 
                 if (nameLower.includes('gift card')) {
                     sText = 'CONTACT VERIFIED SALES ASSOCIATE'; 
@@ -438,7 +516,7 @@
                 }
 
                 html += `
-                <div class="stock-item" onclick="toggleDetail(${index})">
+                <div class="stock-item" onclick="toggleDetail(${item.originalIndex})">
                     <div>
                         <div class="item-name">${item.name}</div>
                         <div class="status ${sClass}">${dotHtml}${sText}</div>
@@ -446,7 +524,7 @@
                     </div>
                     <div class="price">${displayPrice}</div>
                 </div>
-                <div class="item-detail" id="detail-${index}">${item.desc}</div>`;
+                <div class="item-detail" id="detail-${item.originalIndex}">${item.desc}</div>`;
             });
             document.getElementById('list').innerHTML = html;
         }
