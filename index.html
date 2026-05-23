@@ -109,6 +109,35 @@
             margin-bottom: 25px;
             font-size: 0.85rem;
             line-height: 1.5;
+            position: relative;
+        }
+
+        /* Pulsing Red Exclamation Badge */
+        .notice-icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .pulse-exclamation {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--out-stock);
+            color: #0a0a0a;
+            font-weight: 900;
+            font-size: 0.75rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            animation: text-pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes text-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 4px var(--out-stock); }
+            50% { transform: scale(1.2); box-shadow: 0 0 12px var(--out-stock); }
+            100% { transform: scale(1); box-shadow: 0 0 4px var(--out-stock); }
         }
 
         /* Spinner */
@@ -232,7 +261,11 @@
             </div>
 
             <div id="greggs-notice">
-                <strong style="color:var(--out-stock)">IMPORTANT NOTICE</strong><br>
+                <div class="notice-icon-wrapper">
+                    <span class="pulse-exclamation">!</span>
+                    <strong style="color:var(--out-stock)">IMPORTANT NOTICE</strong>
+                </div>
+                <br>
                 Greggs accounts are OOS. Note: On <span style="text-decoration:underline">June 7th</span>, prices will increase to £0.50.
             </div>
 
@@ -246,7 +279,7 @@
                 <div class="price">--</div>
             </div>
             
-            <!-- Footer Area with New Contact Us Feature -->
+            <!-- Footer Area with Contact Us Feature -->
             <div class="footer-content">
                 <div class="contact-section">
                     <span>Contact Us</span>
@@ -295,7 +328,7 @@
                 let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
                 let sClass = isStock ? 'status-available' : 'status-oos';
                 
-                // Corrected assignment: Static green dot for available, pulsing red dot for out of stock
+                // Controlled dynamic indicator dots: Clean green for available, pulsing red for out of stock
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
                 if (nameLower.includes('gift card')) {
