@@ -11,8 +11,8 @@
             --accent: #00d4ff;
             --text-main: #ffffff;
             --text-dim: #888888;
-            --in-stock: #00ff88;
-            --out-stock: #ff4444;
+            --in-stock: #00ff88; /* Vibrant Green */
+            --out-stock: #ff4444; /* Vibrant Red */
             --glass: rgba(255, 255, 255, 0.03);
             --shine: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
         }
@@ -25,100 +25,75 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 20px;
-            position: relative;
+        .container { width: 100%; max-width: 480px; padding: 20px; }
+
+        /* Mobile-Friendly Header */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 5px;
+            border-bottom: 1px solid #222;
         }
 
-        /* Fixed Cooldown Reset Tag */
-        .cooldown-tag {
-            position: fixed;
-            right: 20px;
-            top: 20px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid var(--accent);
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 800;
+        .cooldown-info {
             color: var(--accent);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
         }
 
-        /* Rotating Loader */
-        #loader-container {
-            text-align: center;
-            margin-top: 150px;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--glass);
-            border-top: 2px solid var(--accent);
+        /* Glowing Dot Animation */
+        .dot {
+            height: 8px;
+            width: 8px;
             border-radius: 50%;
-            margin: 0 auto 20px;
-            animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+            display: inline-block;
+            margin-right: 8px;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Sort Bar */
-        .sort-bar {
-            display: none;
-            justify-content: flex-start;
-            gap: 12px;
-            margin-bottom: 25px;
+        .dot-green {
+            background-color: var(--in-stock);
+            box-shadow: 0 0 8px var(--in-stock);
+            animation: pulse-green 2s infinite;
         }
 
-        .sort-btn {
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-dim);
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
         }
 
-        .sort-btn.active {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-        }
-
-        /* Greggs Pinned Notice */
+        /* Notice Box - Pinned to Top */
         #greggs-notice {
             display: none;
-            background: rgba(255, 68, 68, 0.1);
+            background: rgba(255, 68, 68, 0.15);
             border: 1px solid var(--out-stock);
             border-radius: 16px;
             padding: 18px;
             margin-bottom: 25px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             line-height: 1.5;
-            position: relative;
-            overflow: hidden;
         }
 
-        #greggs-notice::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--shine);
-            pointer-events: none;
+        /* Spinner */
+        #loader-container { text-align: center; margin-top: 150px; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 2px solid var(--glass);
+            border-top: 2px solid var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Modern Stock Item */
+        /* Items */
         .stock-item {
             background: var(--card-bg);
             border-radius: 18px;
@@ -131,52 +106,47 @@
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.03);
-            transition: transform 0.2s, border 0.2s;
         }
 
-        .stock-item::before {
-            content: '';
-            position: absolute;
+        .stock-item::after {
+            content: ''; position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--shine);
-            opacity: 0.5;
+            background: var(--shine); pointer-events: none;
         }
 
-        .stock-item:hover {
-            border-color: rgba(0, 212, 255, 0.3);
-            transform: translateY(-2px);
+        .status { 
+            font-size: 0.65rem; 
+            font-weight: 900; 
+            letter-spacing: 1.5px; 
+            margin-top: 6px; 
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
         }
+
+        .status-available { color: var(--in-stock); }
+        .status-oos { color: var(--out-stock); }
+        .status-contact { color: #f39c12; }
 
         .item-detail {
             display: none;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.01);
             border-radius: 0 0 18px 18px;
             padding: 20px;
             margin: -15px 0 15px;
             font-size: 0.85rem;
-            color: #aaa;
-            border: 1px solid rgba(255,255,255,0.03);
+            color: #999;
+            border: 1px solid #222;
             border-top: none;
         }
 
-        .price { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px; }
-        .status { font-size: 0.6rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
-        
-        .footer {
-            margin-top: 80px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            padding-bottom: 40px;
-        }
+        .coming-soon { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
 
+        .footer { margin-top: 60px; text-align: center; font-size: 0.7rem; color: var(--text-dim); padding-bottom: 40px; }
         a { color: var(--accent); text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
-
-    <div class="cooldown-tag">COOLDOWN RESET: £1</div>
-
     <div class="container">
         <div id="loader-container">
             <div class="spinner"></div>
@@ -184,53 +154,47 @@
         </div>
 
         <div id="main-content" style="display:none;">
-            <div id="greggs-notice">
-                <strong style="color:var(--out-stock)">IMPORTANT:</strong> Greggs accounts are OOS. <br>
-                Note: On <span style="text-decoration:underline">June 7th</span>, prices will increase from 35p to 50p per unit.
+            <div class="header-nav">
+                <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a>
+                <div class="cooldown-info">COOLDOWN RESET: £1</div>
             </div>
 
-            <div class="sort-bar">
-                <button class="sort-btn active" id="sort-az" onclick="sortData('az')">A-Z</button>
-                <button class="sort-btn" id="sort-price" onclick="sortData('price')">PRICE</button>
+            <div id="greggs-notice">
+                <strong style="color:var(--out-stock)">IMPORTANT NOTICE</strong><br>
+                Greggs accounts are OOS. Note: On <span style="text-decoration:underline">June 7th</span>, prices will increase to £0.50.
             </div>
 
             <div id="list"></div>
 
-            <div class="footer">
-                <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a><br>
-                REPLIES TYPICALLY WITHIN 2-3 BUSINESS DAYS
+            <div class="stock-item coming-soon">
+                <div>
+                    <div class="item-name">NEW SERVICE</div>
+                    <div class="status" style="color: #444;">COMING SOON</div>
+                </div>
+                <div class="price">--</div>
             </div>
+            <div class="footer">REPLIES TYPICALLY WITHIN 2-3 BUSINESS DAYS</div>
         </div>
     </div>
 
     <script>
         let rawData = [];
-
-        window.onload = function() {
-            setTimeout(loadStock, 1200);
-        };
+        window.onload = function() { setTimeout(loadStock, 1200); };
 
         function loadStock() {
             fetch('stock.json').then(res => res.json()).then(data => {
                 rawData = data.map(item => {
-                    // Change name logic
                     if (item.name.toLowerCase().includes("fast ticket")) {
                         item.name = "Train tickets under £5";
-                        item.desc = "(Valid for round trips as long as each ticket is below £5)";
                     }
                     return item;
                 });
-
                 document.getElementById('loader-container').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                document.querySelector('.sort-bar').style.display = 'flex';
-                
-                // Show notice if any Greggs item is OOS
-                if (rawData.some(i => i.name.toLowerCase().includes('greggs') && i.stock === 'NO')) {
+                if (rawData.some(i => i.name.toLowerCase().includes('greggs account') && i.stock === 'NO')) {
                     document.getElementById('greggs-notice').style.display = 'block';
                 }
-
-                sortData('az');
+                render();
             });
         }
 
@@ -241,38 +205,28 @@
             el.style.display = isVis ? 'none' : 'block';
         }
 
-        function sortData(type) {
-            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('sort-' + type).classList.add('active');
-            if (type === 'az') rawData.sort((a, b) => a.name.localeCompare(b.name));
-            else rawData.sort((a, b) => (parseFloat(a.price.replace('£',''))||0) - (parseFloat(b.price.replace('£',''))||0));
-            render();
-        }
-
         function render() {
             let html = '';
             rawData.forEach((item, index) => {
                 const isStock = item.stock === 'YES';
-                const isGiftCard = item.name.toLowerCase().includes('gift card');
-                
-                let statusText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
-                let statusClass = isStock ? 'in' : 'out';
+                const nameLower = item.name.toLowerCase();
+                let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
+                let sClass = isStock ? 'status-available' : 'status-oos';
+                let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '';
 
-                // Specific Gift Card Logic
-                if (isGiftCard) {
-                    statusText = 'CONTACT OWNER';
-                    statusClass = 'in'; // Making it look active but directed
+                if (nameLower.includes('gift card')) {
+                    sText = 'CONTACT OWNER'; sClass = 'status-contact'; dotHtml = '';
                 }
 
                 html += `
                 <div class="stock-item" onclick="toggleDetail(${index})">
                     <div>
                         <div class="item-name">${item.name}</div>
-                        <div class="status ${statusClass}">${statusText}</div>
+                        <div class="status ${sClass}">${dotHtml}${sText}</div>
                     </div>
                     <div class="price">${item.price}</div>
                 </div>
-                <div class="item-detail" id="detail-${index}">${item.desc || 'No details.'}</div>`;
+                <div class="item-detail" id="detail-${index}">${item.desc}</div>`;
             });
             document.getElementById('list').innerHTML = html;
         }
