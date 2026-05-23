@@ -3,226 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Stock Management</title>
+    <title>Inventory</title>
     <style>
-        /* Smooth Global Transitions */
-        * {
-            box-sizing: border-box;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        :root {
+            --bg: #0a0a0a; 
+            --card-bg: #161616;
+            --accent: #00d4ff;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --in-stock: #00ff88; /* Vibrant Green */
+            --out-stock: #ff4444; /* Vibrant Red */
+            --glass: rgba(255, 255, 255, 0.03);
+            --shine: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f6f8fa;
-            color: #24292f;
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
-            padding: 40px 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             min-height: 100vh;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: #ffffff;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
-            padding: 32px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        .container { width: 100%; max-width: 480px; padding: 20px; }
+
+        /* Page Main Title */
+        .main-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 10px 0 20px 5px;
+            letter-spacing: 1px;
         }
 
-        /* Live Stock Header Layout */
-        h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-top: 0;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #d0d7de;
-            padding-bottom: 12px;
-        }
-
-        p.subtitle {
-            color: #57606a;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-
-        /* Smooth Network Status Section */
-        .status-box {
-            background-color: #f0f7ff;
-            border: 1px solid #ddf4ff;
-            border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .status-item {
+        /* Mobile-Friendly Header */
+        .header-nav {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            font-size: 14px;
-            margin: 8px 0;
+            margin-bottom: 15px;
+            padding: 10px 5px;
+            border-bottom: 1px solid #222;
         }
 
-        /* Steady, Solid Green Status Indicator */
-        .success-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #1a7f37;
+        .cooldown-info {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* Delivery Guarantee Notice Badge */
+        .delivery-notice {
+            background: rgba(0, 255, 136, 0.06);
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--in-stock);
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        /* Glowing Dot System */
+        .dot {
+            height: 8px;
+            width: 8px;
             border-radius: 50%;
-            margin-right: 10px;
+            display: inline-block;
+            margin-right: 8px;
             flex-shrink: 0;
         }
 
-        /* Gentle Red Pulse Indicator for Alert States */
-        .alert-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #cf222e;
+        /* Clean, Static Green Dot */
+        .dot-green {
+            background-color: var(--in-stock);
+            box-shadow: 0 0 6px var(--in-stock);
+        }
+
+        /* Vibrant Red Pulsing Dot for OOS Items */
+        .dot-red {
+            background-color: var(--out-stock);
+            box-shadow: 0 0 6px var(--out-stock);
+            animation: pulse-red 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); opacity: 1; box-shadow: 0 0 4px var(--out-stock); }
+            50% { transform: scale(1.15); opacity: 0.6; box-shadow: 0 0 10px var(--out-stock); }
+            100% { transform: scale(0.95); opacity: 1; box-shadow: 0 0 4px var(--out-stock); }
+        }
+
+        /* Notice Box - Pinned to Top */
+        #greggs-notice {
+            display: none;
+            background: rgba(255, 68, 68, 0.15);
+            border: 1px solid var(--out-stock);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* Spinner */
+        #loader-container { text-align: center; margin-top: 150px; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 2px solid var(--glass);
+            border-top: 2px solid var(--accent);
             border-radius: 50%;
-            margin-right: 10px;
-            flex-shrink: 0;
-            animation: alertPulse 2s infinite ease-in-out;
+            margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes alertPulse {
-            0% { transform: scale(0.95); opacity: 1; }
-            50% { transform: scale(1.15); opacity: 0.6; }
-            100% { transform: scale(0.95); opacity: 1; }
-        }
-
-        /* Delivery & Guarantee Notice Badge */
-        .guarantee-badge {
-            background-color: #dafbe1;
-            border: 1px solid #eceff1;
-            color: #1a7f37;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 10px 14px;
-            border-radius: 6px;
-            margin-bottom: 24px;
+        /* Items with Smooth Transitions */
+        .stock-item {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 10px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        /* Form / Inputs styling */
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            font-weight: 500;
-            font-size: 14px;
-            margin-bottom: 6px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 6px 12px;
-            font-size: 14px;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
-            outline: none;
-            background-color: #f6f8fa;
-        }
-
-        input:focus {
-            border-color: #0969da;
-            background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.3);
-        }
-
-        /* Interactive Button States */
-        button {
-            width: 100%;
-            padding: 12px;
-            color: #ffffff;
-            background-color: #1a7f37;
-            border: 1px solid rgba(27, 31, 36, 0.15);
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
         }
 
-        button:hover {
-            background-color: #1a7f37ea;
+        .stock-item:hover {
+            background: rgba(255, 255, 255, 0.02);
             transform: translateY(-1px);
         }
 
-        button:active {
+        .stock-item:active {
             transform: translateY(1px);
         }
 
-        /* Bottom Email Footer */
-        footer {
-            margin-top: auto;
-            padding-top: 40px;
-            font-size: 12px;
-            color: #57606a;
-            text-align: center;
+        .stock-item::after {
+            content: ''; position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--shine); pointer-events: none;
         }
 
-        footer a {
-            color: #0969da;
-            text-decoration: none;
+        .status { 
+            font-size: 0.65rem; 
+            font-weight: 900; 
+            letter-spacing: 1.5px; 
+            margin-top: 6px; 
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .status-available { color: var(--in-stock); }
+        .status-oos { color: var(--out-stock); }
+        .status-contact { color: #f39c12; }
+
+        /* Smooth Collapse Animation for Details */
+        .item-detail {
+            display: none;
+            background: rgba(255,255,255,0.01);
+            border-radius: 0 0 18px 18px;
+            padding: 20px;
+            margin: -15px 0 15px;
+            font-size: 0.85rem;
+            color: #999;
+            border: 1px solid #222;
+            border-top: none;
+            transition: all 0.2s ease-in-out;
         }
+
+        .coming-soon { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
+        .coming-soon:hover { transform: none; background: var(--card-bg); }
+
+        .footer { margin-top: 60px; text-align: center; font-size: 0.7rem; color: var(--text-dim); padding-bottom: 40px; }
+        a { color: var(--accent); text-decoration: none; font-weight: 700; transition: color 0.2s ease; }
+        a:hover { color: var(--text-main); }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <!-- Live Stock Header at the Top -->
-        <h1>Live Stock</h1>
-        <p class="subtitle">Inventory Control & Server Configuration Panel</p>
+        <div id="loader-container">
+            <div class="spinner"></div>
+            <div style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 5px;">SYNCING...</div>
+        </div>
 
-        <!-- Network Infrastructure Monitor -->
-        <div class="status-box">
-            <div class="status-item">
-                <div class="success-dot"></div>
-                <span><strong>Infrastructure:</strong> TLS & DNS Verified</span>
+        <div id="main-content" style="display:none;">
+            <!-- Main Header -->
+            <div class="main-title">Live Stock</div>
+
+            <div class="header-nav">
+                <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a>
+                <div class="cooldown-info">COOLDOWN RESET: £1</div>
             </div>
-            <div class="status-item">
-                <div class="alert-dot"></div>
-                <span><strong>Module Tracking:</strong> Core Modules Out of Stock</span>
+
+            <!-- Delivery Time Guarantee Banner -->
+            <div class="delivery-notice">
+                ⏱ Guaranteed delivery time between 5-25 minutes or a refund promised!
             </div>
-        </div>
 
-        <!-- Delivery Guarantee Section -->
-        <div class="guarantee-badge">
-            <span>⏱ Average delivery time: 5-25 minutes or refund guaranteed</span>
-        </div>
+            <div id="greggs-notice">
+                <strong style="color:var(--out-stock)">IMPORTANT NOTICE</strong><br>
+                Greggs accounts are OOS. Note: On <span style="text-decoration:underline">June 7th</span>, prices will increase to £0.50.
+            </div>
 
-        <!-- Sample Interface Form Elements -->
-        <div class="form-group">
-            <label for="animal-id">Animal Batch Identifier</label>
-            <input type="text" id="animal-id" placeholder="e.g., BATCH-042">
-        </div>
+            <div id="list"></div>
 
-        <div class="form-group">
-            <label for="stock-type">Stock Classification</label>
-            <select id="stock-type">
-                <option>Cattle</option>
-                <option>Sheep</option>
-                <option>Poultry</option>
-            </select>
+            <div class="stock-item coming-soon">
+                <div>
+                    <div class="item-name">NEW SERVICE</div>
+                    <div class="status" style="color: #444;">COMING SOON</div>
+                </div>
+                <div class="price">--</div>
+            </div>
+            <div class="footer">REPLIES TYPICALLY WITHIN 2-3 BUSINESS DAYS</div>
         </div>
-
-        <button type="button">Update Live Stock Log</button>
     </div>
 
-    <!-- Contact Email Safely Placed at the Bottom -->
-    <footer>
-        <p>System Administrator Support: <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a></p>
-    </footer>
+    <script>
+        let rawData = [];
+        window.onload = function() { setTimeout(loadStock, 1200); };
 
+        function loadStock() {
+            // Simulated fetch logic matching your original script environment
+            fetch('stock.json').then(res => res.json()).then(data => {
+                rawData = data.map(item => {
+                    if (item.name.toLowerCase().includes("fast ticket")) {
+                        item.name = "Train tickets under £5";
+                    }
+                    return item;
+                });
+                document.getElementById('loader-container').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                if (rawData.some(i => i.name.toLowerCase().includes('greggs account') && i.stock === 'NO')) {
+                    document.getElementById('greggs-notice').style.display = 'block';
+                }
+                render();
+            }).catch(err => {
+                // Graceful development fallback configuration if stock.json isn't loaded locally yet
+                console.log("Awaiting configuration file connection.");
+            });
+        }
+
+        function toggleDetail(idx) {
+            const el = document.getElementById('detail-' + idx);
+            const isVis = el.style.display === 'block';
+            document.querySelectorAll('.item-detail').forEach(d => d.style.display = 'none');
+            el.style.display = isVis ? 'none' : 'block';
+        }
+
+        function render() {
+            let html = '';
+            rawData.forEach((item, index) => {
+                const isStock = item.stock === 'YES';
+                const nameLower = item.name.toLowerCase();
+                let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
+                let sClass = isStock ? 'status-available' : 'status-oos';
+                
+                // Controlled dynamic indicator dots: Clean green for available, pulsing red for out of stock
+                let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
+
+                if (nameLower.includes('gift card')) {
+                    sText = 'CONTACT OWNER'; sClass = 'status-contact'; dotHtml = '';
+                }
+
+                html += `
+                <div class="stock-item" onclick="toggleDetail(${index})">
+                    <div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="status ${sClass}">${dotHtml}${sText}</div>
+                    </div>
+                    <div class="price">${item.price}</div>
+                </div>
+                <div class="item-detail" id="detail-${index}">${item.desc}</div>`;
+            });
+            document.getElementById('list').innerHTML = html;
+        }
+    </script>
 </body>
 </html>
