@@ -40,11 +40,25 @@
         /* Mobile-Friendly Header */
         .header-nav {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
             padding: 10px 5px;
             border-bottom: 1px solid #222;
+        }
+
+        .live-timer {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+        }
+
+        .live-timer span {
+            color: var(--text-main);
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+            margin-left: 4px;
         }
 
         .cooldown-info {
@@ -108,14 +122,8 @@
         }
 
         @keyframes emit-radius {
-            0% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(2.4);
-                opacity: 0;
-            }
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.4); opacity: 0; }
         }
 
         /* Notice Box - Pinned to Top */
@@ -212,6 +220,15 @@
             align-items: center;
         }
 
+        .item-cooldown {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
         .status-available { color: var(--in-stock); }
         .status-oos { color: var(--out-stock); }
         .status-contact { color: #f39c12; }
@@ -271,6 +288,8 @@
             <div class="main-title">Live Stock</div>
 
             <div class="header-nav">
+                <!-- Automated Daily Countdown Timer -->
+                <div class="live-timer">NEXT RESTOCK WAVE:<span id="countdown-clock">00:00:00</span></div>
                 <div class="cooldown-info">COOLDOWN RESET: £1</div>
             </div>
 
@@ -311,7 +330,64 @@
 
     <script>
         let rawData = [];
-        window.onload = function() { setTimeout(loadStock, 1200); };
+        window.onload = function() { 
+            setTimeout(loadStock, 1200);
+            startCountdown();
+        };
+
+        function startCountdown() {
+            const clockEl = document.getElementById('countdown-clock');
+            
+            function updateClock() {
+                const now = new Date();
+                
+                // Formatter to read the user's current date inside the London timezone context
+                const londonFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'Europe/London',
+                    year: 'numeric', month: 'numeric', day: 'numeric',
+                    hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false
+                });
+                
+                const parts = londonFormatter.formatToParts(now);
+                const p = {}; parts.forEach(item => p[item.type] = item.value);
+                
+                // Determine whether London is in daylight savings (BST = UTC+1) or winter time (GMT = UTC+0)
+                // We create a test date using the parsed components assuming UTC, then check its offset
+                const sampleInLondon = new Date(`${p.year}-${p.month}-${p.day}T18:00:00Z`);
+                
+                // Use Intl to find the exact target timestamp safely
+                // 17:00 UTC = 18:00 BST. 18:00 UTC = 18:00 GMT. Let's compute precisely:
+                let targetDate = new Date(Date.UTC(p.year, p.month - 1, p.day, 17, 0, 0)); 
+                
+                // Verify if it's currently GMT season instead of BST season by examining standard local text
+                const isBST = londonFormatter.format(new Date(Date.UTC(p.year, p.month - 1, p.day, 12, 0, 0))).includes('13:');
+                if (!isBST) {
+                    targetDate = new Date(Date.UTC(p.year, p.month - 1, p.day, 18, 0, 0));
+                }
+
+                // If 6PM London time has already passed today, push target to tomorrow
+                if (now >= targetDate) {
+                    targetDate.setUTCDate(targetDate.getUTCDate() + 1);
+                }
+
+                const diff = targetDate - now;
+
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                const hDisplay = hours.toString().padStart(2, '0');
+                const mDisplay = minutes.toString().padStart(2, '0');
+                const sDisplay = seconds.toString().padStart(2, '0');
+
+                if(clockEl) {
+                    clockEl.innerText = `${hDisplay}:${mDisplay}:${sDisplay}`;
+                }
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
 
         function loadStock() {
             fetch('stock.json').then(res => res.json()).then(data => {
@@ -350,7 +426,6 @@
                 
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
-                // Handle changes for gift card matching items
                 if (nameLower.includes('gift card')) {
                     sText = 'CONTACT VERIFIED SALES ASSOCIATE'; 
                     sClass = 'status-contact'; 
@@ -363,6 +438,7 @@
                     <div>
                         <div class="item-name">${item.name}</div>
                         <div class="status ${sClass}">${dotHtml}${sText}</div>
+                        <div class="item-cooldown">COOLDOWN: 3 Hours Per Item</div>
                     </div>
                     <div class="price">${displayPrice}</div>
                 </div>
