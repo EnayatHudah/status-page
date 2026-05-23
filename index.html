@@ -11,8 +11,8 @@
             --accent: #00d4ff;
             --text-main: #ffffff;
             --text-dim: #888888;
-            --in-stock: #00ff88; 
-            --out-stock: #ff4444; 
+            --in-stock: #00ff88; /* Vibrant Green */
+            --out-stock: #ff4444; /* Vibrant Red */
             --glass: rgba(255, 255, 255, 0.03);
             --shine: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
         }
@@ -29,6 +29,7 @@
 
         .container { width: 100%; max-width: 480px; padding: 20px; display: flex; flex-direction: column; }
 
+        /* Page Main Title */
         .main-title {
             font-size: 1.5rem;
             font-weight: 700;
@@ -36,6 +37,7 @@
             letter-spacing: 1px;
         }
 
+        /* Mobile-Friendly Header */
         .header-nav {
             display: flex;
             justify-content: space-between;
@@ -59,6 +61,7 @@
             margin-left: 4px;
         }
 
+        /* Small integrated inline prediction label */
         .predicted-inline {
             font-size: 0.65rem;
             color: var(--text-dim);
@@ -75,6 +78,7 @@
             border-radius: 20px;
         }
 
+        /* Sorting Controls Bar */
         .sort-bar {
             display: flex;
             gap: 8px;
@@ -106,6 +110,7 @@
             color: var(--accent);
         }
 
+        /* Delivery Time Guarantee Banner */
         .delivery-notice {
             background: rgba(0, 255, 136, 0.06);
             border: 1px solid rgba(0, 255, 136, 0.15);
@@ -119,6 +124,7 @@
             letter-spacing: 0.3px;
         }
 
+        /* Glowing Dot System */
         .dot {
             height: 8px;
             width: 8px;
@@ -129,11 +135,13 @@
             position: relative;
         }
 
+        /* Clean, Static Green Dot */
         .dot-green {
             background-color: var(--in-stock);
             box-shadow: 0 0 6px var(--in-stock);
         }
 
+        /* Vibrant Red Dot emitting a small fading radius */
         .dot-red {
             background-color: var(--out-stock);
             box-shadow: 0 0 4px var(--out-stock);
@@ -158,6 +166,7 @@
             100% { transform: scale(2.4); opacity: 0; }
         }
 
+        /* Notice Box - Pinned to Top */
         #greggs-notice {
             display: none;
             background: rgba(255, 68, 68, 0.15);
@@ -170,6 +179,7 @@
             position: relative;
         }
 
+        /* Pulsing Red Exclamation Badge */
         .notice-icon-wrapper {
             display: inline-flex;
             align-items: center;
@@ -197,6 +207,7 @@
             100% { transform: scale(1); box-shadow: 0 0 4px var(--out-stock); }
         }
 
+        /* Spinner */
         #loader-container { text-align: center; margin-top: 150px; }
         .spinner {
             width: 40px; height: 40px;
@@ -208,6 +219,7 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* Items with Smooth Transitions */
         .stock-item {
             background: var(--card-bg);
             border-radius: 18px;
@@ -261,6 +273,7 @@
         .status-oos { color: var(--out-stock); }
         .status-contact { color: #f39c12; }
 
+        /* Smooth Collapse Animation for Details */
         .item-detail {
             display: none;
             background: rgba(255,255,255,0.01);
@@ -277,6 +290,7 @@
         .coming-soon { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
         .coming-soon:hover { transform: none; background: var(--card-bg); }
 
+        /* Bottom Footer and Contact Section */
         .footer-content {
             margin-top: auto;
             padding-top: 60px;
@@ -310,21 +324,25 @@
         </div>
 
         <div id="main-content" style="display:none;">
+            <!-- Main Header -->
             <div class="main-title">Live Stock</div>
 
             <div class="header-nav">
+                <!-- Automated Daily Countdown Timer with quiet inline text label -->
                 <div class="live-timer">
                     NEXT RESTOCK WAVE: <span id="countdown-clock">00:00:00</span><span class="predicted-inline">* Predicted</span>
                 </div>
                 <div class="cooldown-info">COOLDOWN RESET: £1</div>
             </div>
 
+            <!-- Interactive Sorting Bar -->
             <div class="sort-bar">
                 <button class="sort-btn active" id="btn-default" onclick="changeSort('default')">DEFAULT</button>
                 <button class="sort-btn" id="btn-price" onclick="changeSort('price')">SORT BY PRICE</button>
                 <button class="sort-btn" id="btn-az" onclick="changeSort('az')">SORT BY A-Z</button>
             </div>
 
+            <!-- Delivery Time Guarantee Banner -->
             <div class="delivery-notice">
                 ⏱ Guaranteed delivery time between 5-25 minutes or a refund promised!
             </div>
@@ -348,6 +366,7 @@
                 <div class="price">--</div>
             </div>
             
+            <!-- Footer Area with Contact Us Feature -->
             <div class="footer-content">
                 <div class="contact-section">
                     <span>Contact Us</span>
@@ -438,12 +457,10 @@
             el.style.display = isVis ? 'none' : 'block';
         }
 
-        function parsePriceNumeric(item) {
-            const nameLower = item.name.toLowerCase();
-            const priceStr = item.price ? item.price.toString().toLowerCase() : '';
+        function parsePriceNumeric(priceStr) {
+            if (!priceStr) return 0;
             
-            // If it's a gift card or contains a percentage value, treat it as the maximum price
-            if (nameLower.includes('gift card') || priceStr.includes('%')) {
+            if (priceStr.includes('%')) {
                 return 999999; 
             }
             
@@ -468,7 +485,7 @@
             let displayData = [...rawData];
 
             if (currentSort === 'price') {
-                displayData.sort((a, b) => parsePriceNumeric(a) - parsePriceNumeric(b));
+                displayData.sort((a, b) => parsePriceNumeric(a.price) - parsePriceNumeric(b.price));
             } else if (currentSort === 'az') {
                 displayData.sort((a, b) => a.name.localeCompare(b.name));
             } else {
