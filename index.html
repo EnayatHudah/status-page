@@ -61,6 +61,14 @@
             margin-left: 4px;
         }
 
+        /* Small integrated inline prediction label */
+        .predicted-inline {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
         .cooldown-info {
             color: var(--accent);
             font-size: 0.75rem;
@@ -320,8 +328,10 @@
             <div class="main-title">Live Stock</div>
 
             <div class="header-nav">
-                <!-- Automated Daily Countdown Timer -->
-                <div class="live-timer">NEXT RESTOCK WAVE:<span id="countdown-clock">00:00:00</span></div>
+                <!-- Automated Daily Countdown Timer with quiet inline text label -->
+                <div class="live-timer">
+                    NEXT RESTOCK WAVE: <span id="countdown-clock">00:00:00</span><span class="predicted-inline">* Predicted</span>
+                </div>
                 <div class="cooldown-info">COOLDOWN RESET: £1</div>
             </div>
 
@@ -447,11 +457,9 @@
             el.style.display = isVis ? 'none' : 'block';
         }
 
-        // Helper function that detects percentage values and gives them an artificially high value so they sort to the bottom
         function parsePriceNumeric(priceStr) {
             if (!priceStr) return 0;
             
-            // If the price layout contains a % symbol, treat it as a premium or special item and push it last
             if (priceStr.includes('%')) {
                 return 999999; 
             }
