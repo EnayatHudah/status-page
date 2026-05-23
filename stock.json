@@ -1,38 +1,38 @@
 [
-  { 
-    "name": "Greggs Account", 
-    "price": "£0.35", 
+  {
+    "name": "Greggs Account",
+    "price": "£0.35",
     "stock": "NO",
-    "desc": "Greggs Account with Sweet Treat & Hot/Cold Drink"
+    "desc": "Free sweet treat with Hot/Cold drink. Note: Price increases to £0.50 on June 7th."
   },
-  { 
-    "name": "Fast Train Ticket Generation", 
-    "price": "£3.00", 
+  {
+    "name": "Reserved Greggs Account",
+    "price": "£1.50",
     "stock": "YES",
-    "desc": "Required ASAP. Does not include ticket price unless tickets are under £5."
+    "desc": "Same as greggs account but reserved to bypass stock outages."
   },
-  { 
-    "name": "£10 Off Ride", 
-    "price": "£2.50", 
+  {
+    "name": "Greggs Gift Card",
+    "price": "VARIES",
     "stock": "YES",
-    "desc": "Valid for a single trip. Apply at checkout in the app."
+    "desc": "Please contact the owner directly to check current balances and availability."
   },
-  { 
-    "name": "Greggs GiftCard", 
-    "price": "75% VALUE", 
+  {
+    "name": "Fast ticket generation",
+    "price": "£3.00",
     "stock": "YES",
-    "desc": "Gift card balance varies. Price is calculated as 75% of the total balance."
+    "desc": "(Valid for round trips as long as each ticket is below £5)"
   },
-  { 
-    "name": "Voxi QR", 
-    "price": "£5.00", 
+  {
+    "name": "VOXI QR Code",
+    "price": "£5.00",
     "stock": "YES",
-    "desc": "Scan the QR code to activate your Voxi data bundle."
+    "desc": "QR code to activate a month worth of data bundle."
   },
-  { 
-    "name": "Greggs Reserved Account", 
-    "price": "£1.50", 
+  {
+    "name": "£10 Off Ride",
+    "price": "£2.50",
     "stock": "YES",
-    "desc": "Same as Greggs Account —> Bypasses cooldown"
+    "desc": "£10 off your first ride. NO EMAIL INCLUDED."
   }
 ]
