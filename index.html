@@ -78,6 +78,7 @@
             display: inline-block;
             margin-right: 8px;
             flex-shrink: 0;
+            position: relative;
         }
 
         /* Clean, Static Green Dot */
@@ -86,17 +87,35 @@
             box-shadow: 0 0 6px var(--in-stock);
         }
 
-        /* Vibrant Red Pulsing Dot for OOS Items */
+        /* Vibrant Red Dot emitting a small fading radius */
         .dot-red {
             background-color: var(--out-stock);
-            box-shadow: 0 0 6px var(--out-stock);
-            animation: pulse-red 2s infinite ease-in-out;
+            box-shadow: 0 0 4px var(--out-stock);
         }
 
-        @keyframes pulse-red {
-            0% { transform: scale(0.95); opacity: 1; box-shadow: 0 0 4px var(--out-stock); }
-            50% { transform: scale(1.15); opacity: 0.6; box-shadow: 0 0 10px var(--out-stock); }
-            100% { transform: scale(0.95); opacity: 1; box-shadow: 0 0 4px var(--out-stock); }
+        .dot-red::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--out-stock);
+            opacity: 1;
+            transform: scale(1);
+            animation: emit-radius 2s infinite cubic-bezier(0.25, 0, 0, 1);
+        }
+
+        @keyframes emit-radius {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2.4); /* Small controlled expansion */
+                opacity: 0; /* Fades out smoothly */
+            }
         }
 
         /* Notice Box - Pinned to Top */
@@ -328,7 +347,7 @@
                 let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
                 let sClass = isStock ? 'status-available' : 'status-oos';
                 
-                // Controlled dynamic indicator dots: Clean green for available, pulsing red for out of stock
+                // Assigning clean static green or custom emission radius red dots
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
                 if (nameLower.includes('gift card')) {
