@@ -34,5 +34,17 @@
     "price": "£2.50",
     "stock": "YES",
     "desc": "£10 off your first ride. NO EMAIL INCLUDED."
+  },
+  {
+    "name": "Five Guys Milkshake QR",
+    "price": "£1.00",
+    "stock": "YES",
+    "desc": "Free Birthday shake"
+  },
+  {
+    "name": "Subway Cookie",
+    "price": "£0.40",
+    "stock": "YES",
+    "desc": "Log in details for subway app provided upon purchase"
   }
 ]
