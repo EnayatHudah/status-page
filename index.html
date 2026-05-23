@@ -113,8 +113,8 @@
                 opacity: 0.8;
             }
             100% {
-                transform: scale(2.4); /* Small controlled expansion */
-                opacity: 0; /* Fades out smoothly */
+                transform: scale(2.4);
+                opacity: 0;
             }
         }
 
@@ -347,11 +347,11 @@
                 let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
                 let sClass = isStock ? 'status-available' : 'status-oos';
                 
-                // Assigning clean static green or custom emission radius red dots
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
+                // Specific match for gift cards update
                 if (nameLower.includes('gift card')) {
-                    sText = 'CONTACT OWNER'; sClass = 'status-contact'; dotHtml = '';
+                    sText = 'CONTACT VERIFIED SALES ASSOCIATE'; sClass = 'status-contact'; dotHtml = '';
                 }
 
                 html += `
