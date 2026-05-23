@@ -369,7 +369,7 @@
 
     <script>
         let rawData = [];
-        let currentSort = 'default'; // Track the active filter
+        let currentSort = 'default';
 
         window.onload = function() { 
             setTimeout(loadStock, 1200);
@@ -422,12 +422,10 @@
 
         function loadStock() {
             fetch('stock.json').then(res => res.json()).then(data => {
-                // Map out configurations and ensure specific text sanitization runs instantly
                 rawData = data.map((item, originalIndex) => {
                     if (item.name.toLowerCase().includes("fast ticket")) {
                         item.name = "Train tickets under £5";
                     }
-                    // Keep track of internal original order index for 'default' reset feature
                     item.originalIndex = originalIndex;
                     return item;
                 });
@@ -449,10 +447,15 @@
             el.style.display = isVis ? 'none' : 'block';
         }
 
-        // Helper function to turn price text strings (like "£0.25", "£1.50", "75% Of Value") into cleanly readable digits
+        // Helper function that detects percentage values and gives them an artificially high value so they sort to the bottom
         function parsePriceNumeric(priceStr) {
             if (!priceStr) return 0;
-            // Clean out text artifacts or currency symbols to leave trailing digits
+            
+            // If the price layout contains a % symbol, treat it as a premium or special item and push it last
+            if (priceStr.includes('%')) {
+                return 999999; 
+            }
+            
             let clean = priceStr.replace(/[^\d.]/g, '');
             let parsed = parseFloat(clean);
             return isNaN(parsed) ? 0 : parsed;
@@ -461,7 +464,6 @@
         function changeSort(type) {
             currentSort = type;
             
-            // Handle visual button states inside navigation header elements
             document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
             if(type === 'default') document.getElementById('btn-default').classList.add('active');
             if(type === 'price') document.getElementById('btn-price').classList.add('active');
@@ -472,8 +474,6 @@
 
         function render() {
             let html = '';
-            
-            // Clone our master dataset before executing an in-memory variable slice sort
             let displayData = [...rawData];
 
             if (currentSort === 'price') {
@@ -481,7 +481,6 @@
             } else if (currentSort === 'az') {
                 displayData.sort((a, b) => a.name.localeCompare(b.name));
             } else {
-                // Reset cleanly back to local file ordering sequencing rules
                 displayData.sort((a, b) => a.originalIndex - b.originalIndex);
             }
 
@@ -493,8 +492,6 @@
                 let displayPrice = item.price;
                 
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
-
-                // Cooldown parsing loop handles string variables natively
                 let cooldownText = 'COOLDOWN: 3 Hours Per Item';
                 
                 if (nameLower.includes('gift card')) {
