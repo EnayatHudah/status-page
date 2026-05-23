@@ -6,7 +6,7 @@
     <title>Inventory</title>
     <style>
         :root {
-            --bg: #121212; /* Carbon Black */
+            --bg: #121212; 
             --card-bg: #1c1c1c;
             --accent: #00d4ff;
             --text-main: #ffffff;
@@ -18,11 +18,10 @@
         body {
             background-color: var(--bg);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
         }
 
         .container {
@@ -31,62 +30,45 @@
             padding: 20px;
         }
 
-        /* Loader Screen */
         #loader {
             text-align: center;
             margin-top: 150px;
             color: var(--text-dim);
-            font-size: 0.75rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
-        /* Items List */
-        #list {
-            display: none;
-            margin-top: 20px;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
         }
 
         .stock-item {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid transparent;
-            transition: transform 0.1s;
         }
 
-        .stock-item:active { transform: scale(0.98); }
-
-        .item-name { font-weight: 500; font-size: 1.05rem; }
-        .price { font-weight: 700; color: var(--accent); font-size: 1.1rem; }
-        
-        .status { font-size: 0.65rem; font-weight: 800; margin-top: 5px; letter-spacing: 0.5px; }
+        .item-name { font-weight: 500; }
+        .price { font-weight: 700; color: var(--accent); }
+        .status { font-size: 0.7rem; font-weight: 700; margin-top: 4px; }
         .in { color: var(--in-stock); }
         .out { color: var(--out-stock); }
 
-        /* Footer */
         .footer {
-            margin-top: 60px;
+            margin-top: 50px;
             text-align: center;
             font-size: 0.7rem;
             color: var(--text-dim);
-            line-height: 1.8;
-            letter-spacing: 0.5px;
         }
 
-        a { color: var(--text-main); text-decoration: none; font-weight: 600; }
+        a { color: var(--text-main); text-decoration: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div id="loader">CHECKING LIVE STOCK...</div>
-        
-        <div id="list"></div>
+        <div id="list" style="display:none;"></div>
 
         <div class="footer">
             CONTACT: <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a><br>
@@ -96,8 +78,7 @@
 
     <script>
         window.onload = function() {
-            // Artificial delay to show the "Checking" screen
-            setTimeout(loadStock, 1200);
+            setTimeout(loadStock, 1000);
         };
 
         function loadStock() {
@@ -106,341 +87,23 @@
                 .then(data => {
                     document.getElementById('loader').style.display = 'none';
                     document.getElementById('list').style.display = 'block';
-                    renderItems(data);
+                    let html = '';
+                    data.forEach(item => {
+                        const isStock = item.stock === 'YES';
+                        html += `
+                        <div class="stock-item">
+                            <div>
+                                <div class="item-name">${item.name}</div>
+                                <div class="status ${isStock ? 'in' : 'out'}">${isStock ? 'AVAILABLE' : 'SOLD OUT'}</div>
+                            </div>
+                            <div class="price">${item.price}</div>
+                        </div>`;
+                    });
+                    document.getElementById('list').innerHTML = html;
                 })
-                .catch(err => {
-                    document.getElementById('loader').innerText = "CONNECTION ERROR";
+                .catch(() => {
+                    document.getElementById('loader').innerText = "ERROR LOADING STOCK";
                 });
-        }
-
-        function renderItems(data) {
-            let html = '';
-            data.forEach(item => {
-                const isStock = item.stock === 'YES';
-                html += `
-                <div class="stock-item">
-                    <div>
-                        <div class="item-name">${item.name}</div>
-                        <div class="status ${isStock ? 'in' : 'out'}">${isStock ? 'AVAILABLE' : 'SOLD OUT'}</div>
-                    </div>
-                    <div class="price">${item.price}</div>
-                </div>`;
-            });
-            document.getElementById('list').innerHTML = html;
-        }
-    </script>
-</body>
-</html>            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(12px);
-            transition: opacity 0.4s ease;
-        }
-
-        .login-card {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 28px;
-            border: 1px solid #333;
-            text-align: center;
-            width: 85%;
-            max-width: 350px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-        }
-
-        .login-card h2 {
-            margin-top: 0;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-size: 1.1rem;
-            color: var(--accent);
-        }
-
-        .login-card p {
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 16px;
-            background: #000;
-            border: 1px solid #333;
-            border-radius: 14px;
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.3s;
-            text-align: center;
-        }
-
-        .login-input:focus { border-color: var(--accent); }
-
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background: var(--accent);
-            color: black;
-            border: none;
-            border-radius: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Header & Sorting */
-        .header {
-            margin-bottom: 30px;
-            text-align: left;
-        }
-
-        .header h1 {
-            font-size: 1.8rem;
-            letter-spacing: -1px;
-            margin-bottom: 10px;
-        }
-
-        .sort-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .sort-btn {
-            background: #222;
-            border: none;
-            color: var(--text-dim);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .sort-btn.active {
-            background: var(--accent);
-            color: black;
-            font-weight: 600;
-        }
-
-        /* Stock Items */
-        .stock-item {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: 0.2s;
-        }
-
-        .stock-item:hover { border-color: #333; }
-
-        .item-name {
-            font-weight: 600;
-            font-size: 1.05rem;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .status-dot {
-            height: 6px;
-            width: 6px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-            vertical-align: middle;
-        }
-
-        .in { color: var(--in-stock); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; }
-        .in .status-dot { background-color: var(--in-stock); }
-        .out { color: var(--out-stock); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; }
-        .out .status-dot { background-color: var(--out-stock); }
-
-        .price {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .item-detail {
-            display: none;
-            padding: 15px 20px;
-            background: #1a1a1a;
-            margin-top: -10px;
-            margin-bottom: 12px;
-            border-bottom-left-radius: 18px;
-            border-bottom-right-radius: 18px;
-            font-size: 0.9rem;
-            color: #ccc;
-            line-height: 1.5;
-            border: 1px solid #333;
-            border-top: none;
-        }
-
-        /* Loader */
-        #loader {
-            text-align: center;
-            margin-top: 50px;
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #222;
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
-
-        .price-change-text { color: var(--out-stock); font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div id="login-overlay" style="display: none;">
-        <div class="login-card">
-            <h2>Authentication</h2>
-            <p>Please enter your name or handle to view the live inventory.</p>
-            <input type="text" id="visitor-name-input" class="login-input" placeholder="Name" autocomplete="off">
-            <button class="login-btn" onclick="saveLogin()">Access Stock</button>
-        </div>
-    </div>
-
-    <div class="container" id="main-content" style="display: none;">
-        <div class="header">
-            <h1>StockStatus</h1>
-            <div class="sort-container">
-                <button class="sort-btn active" id="sort-name" onclick="updateDisplay('name')">NAME</button>
-                <button class="sort-btn" id="sort-price" onclick="updateDisplay('price')">PRICE</button>
-            </div>
-        </div>
-
-        <div id="loader">INITIALIZING...</div>
-        <div id="list"></div>
-
-        <div class="footer">
-            INQUIRIES: <a href="mailto:getintouch@stockstatus.uk" style="color:var(--accent); text-decoration:none; font-weight: 600;">getintouch@stockstatus.uk</a>
-            <div style="margin-top: 8px; opacity: 0.5; font-size: 0.7rem; letter-spacing: 1px;">
-                REPLIES TYPICALLY WITHIN 2-3 BUSINESS DAYS
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let stockData = [];
-        let userName = localStorage.getItem('visitorName');
-
-        // Initial Logic
-        window.onload = function() {
-            if (!userName) {
-                document.getElementById('login-overlay').style.display = 'flex';
-            } else {
-                showMainContent();
-            }
-        };
-
-        function saveLogin() {
-            const input = document.getElementById('visitor-name-input');
-            const name = input.value.trim();
-            
-            if (name.length >= 2) {
-                localStorage.setItem('visitorName', name);
-                userName = name;
-                document.getElementById('login-overlay').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('login-overlay').style.display = 'none';
-                    showMainContent();
-                }, 400);
-            } else {
-                input.style.borderColor = "#ff4444";
-            }
-        }
-
-        function showMainContent() {
-            document.getElementById('main-content').style.display = 'block';
-            setupTracking(userName);
-            loadStock();
-        }
-
-        function setupTracking(name) {
-            if (window.clarity) {
-                window.clarity("set", "user_id", name);
-            }
-        }
-
-        function loadStock() {
-            fetch('stock.json')
-                .then(res => res.json())
-                .then(data => {
-                    stockData = data;
-                    updateDisplay('name');
-                    document.getElementById('loader').style.display = 'none';
-                })
-                .catch(err => {
-                    document.getElementById('loader').innerText = "ERROR LOADING DATA";
-                });
-        }
-
-        function toggleDetail(id) {
-            const el = document.getElementById('detail-' + id);
-            const isVisible = el.style.display === 'block';
-            document.querySelectorAll('.item-detail').forEach(d => d.style.display = 'none');
-            if (el) el.style.display = isVisible ? 'none' : 'block';
-        }
-
-        function renderItems(data) {
-            let html = ``;
-
-            data.forEach((item, index) => {
-                const isStock = item.stock === 'YES';
-                const description = item.desc || "Information for this item is currently being verified.";
-                
-                html += `
-                <div class="stock-item" onclick="toggleDetail(${index})">
-                    <div class="item-info">
-                        <div>
-                            <span class="item-name">${item.name}</span>
-                            <div class="${isStock ? 'in' : 'out'}"><span class="status-dot"></span>${isStock ? 'In Stock' : 'Out of Stock'}</div>
-                        </div>
-                    </div>
-                    <div class="price">${item.price}</div>
-                </div>
-                <div class="item-detail" id="detail-${index}">
-                    ${description}
-                </div>`;
-            });
-            document.getElementById('list').innerHTML = html;
-        }
-
-        function updateDisplay(criteria) {
-            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('sort-' + criteria).classList.add('active');
-            let sorted = [...stockData];
-            if (criteria === 'name') { 
-                sorted.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true })); 
-            } else { 
-                sorted.sort((a, b) => parsePrice(a.price) - parsePrice(b.price)); 
-            }
-            renderItems(sorted);
-        }
-
-        function parsePrice(priceStr) {
-            if (typeof priceStr !== 'string' || priceStr.includes('%') || priceStr.toUpperCase().includes('CONTACT')) return 999999;
-            return parseFloat(priceStr.replace(/[£,]/g, '')) || 0;
         }
     </script>
 </body>
