@@ -27,7 +27,7 @@
             min-height: 100vh;
         }
 
-        .container { width: 100%; max-width: 480px; padding: 20px; }
+        .container { width: 100%; max-width: 480px; padding: 20px; display: flex; flex-direction: column; }
 
         /* Page Main Title */
         .main-title {
@@ -40,7 +40,7 @@
         /* Mobile-Friendly Header */
         .header-nav {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             margin-bottom: 15px;
             padding: 10px 5px;
@@ -56,7 +56,7 @@
             border-radius: 20px;
         }
 
-        /* Delivery Guarantee Notice Badge */
+        /* Delivery Time Guarantee Banner */
         .delivery-notice {
             background: rgba(0, 255, 136, 0.06);
             border: 1px solid rgba(0, 255, 136, 0.15);
@@ -185,7 +185,28 @@
         .coming-soon { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
         .coming-soon:hover { transform: none; background: var(--card-bg); }
 
-        .footer { margin-top: 60px; text-align: center; font-size: 0.7rem; color: var(--text-dim); padding-bottom: 40px; }
+        /* Bottom Footer and Contact Section */
+        .footer-content {
+            margin-top: auto;
+            padding-top: 60px;
+            text-align: center;
+            padding-bottom: 40px;
+        }
+        
+        .contact-section {
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .contact-section span {
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-delay { font-size: 0.7rem; color: var(--text-dim); }
         a { color: var(--accent); text-decoration: none; font-weight: 700; transition: color 0.2s ease; }
         a:hover { color: var(--text-main); }
     </style>
@@ -202,7 +223,6 @@
             <div class="main-title">Live Stock</div>
 
             <div class="header-nav">
-                <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a>
                 <div class="cooldown-info">COOLDOWN RESET: £1</div>
             </div>
 
@@ -225,7 +245,15 @@
                 </div>
                 <div class="price">--</div>
             </div>
-            <div class="footer">REPLIES TYPICALLY WITHIN 2-3 BUSINESS DAYS</div>
+            
+            <!-- Footer Area with New Contact Us Feature -->
+            <div class="footer-content">
+                <div class="contact-section">
+                    <span>Contact Us</span>
+                    <a href="mailto:getintouch@stockstatus.uk">getintouch@stockstatus.uk</a>
+                </div>
+                <div class="footer-delay">REPLIES TYPICALLY WITHIN 2-3 BUSINESS DAYS</div>
+            </div>
         </div>
     </div>
 
@@ -234,7 +262,6 @@
         window.onload = function() { setTimeout(loadStock, 1200); };
 
         function loadStock() {
-            // Simulated fetch logic matching your original script environment
             fetch('stock.json').then(res => res.json()).then(data => {
                 rawData = data.map(item => {
                     if (item.name.toLowerCase().includes("fast ticket")) {
@@ -249,7 +276,6 @@
                 }
                 render();
             }).catch(err => {
-                // Graceful development fallback configuration if stock.json isn't loaded locally yet
                 console.log("Awaiting configuration file connection.");
             });
         }
@@ -269,7 +295,7 @@
                 let sText = isStock ? 'AVAILABLE' : 'OUT OF STOCK';
                 let sClass = isStock ? 'status-available' : 'status-oos';
                 
-                // Controlled dynamic indicator dots: Clean green for available, pulsing red for out of stock
+                // Corrected assignment: Static green dot for available, pulsing red dot for out of stock
                 let dotHtml = isStock ? '<span class="dot dot-green"></span>' : '<span class="dot dot-red"></span>';
 
                 if (nameLower.includes('gift card')) {
