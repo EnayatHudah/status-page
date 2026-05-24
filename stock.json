@@ -51,12 +51,12 @@
     "name": "Free Greggs For 1 Year",
     "price": "£50.00",
     "stock": "YES",
-    "desc": "One year subscription access details."
+    "desc": "One year subscription for unlimited greggs accounts."
   },
   {
     "name": "Costa Cafe Coffee/Frappe",
     "price": "£2.00",
     "stock": "NO",
-    "desc": "Promotion voucher details provided upon restock."
+    "desc": "Promotion restarted by costa log in details shared upon purchase."
   }
 ]
