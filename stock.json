@@ -46,5 +46,17 @@
     "price": "£0.40",
     "stock": "YES",
     "desc": "Log in details for subway app provided upon purchase"
+  },
+  {
+    "name": "Free Greggs For 1 Year",
+    "price": "£50.00",
+    "stock": "YES",
+    "desc": "One year subscription access details."
+  },
+  {
+    "name": "Costa Cafe Coffee/Frappe",
+    "price": "£2.00",
+    "stock": "NO",
+    "desc": "Promotion voucher details provided upon restock."
   }
 ]
