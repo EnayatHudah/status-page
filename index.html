@@ -15,6 +15,7 @@
             --out-stock: #ff4444; 
             --glass: rgba(255, 255, 255, 0.03);
             --shine: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+            --info-blue: #00d4ff;
         }
 
         body {
@@ -158,6 +159,17 @@
             100% { transform: scale(2.4); opacity: 0; }
         }
 
+        #costa-notice {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--info-blue);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            position: relative;
+        }
+
         #greggs-notice {
             display: none;
             background: rgba(255, 68, 68, 0.15);
@@ -189,6 +201,19 @@
             height: 16px;
             border-radius: 50%;
             animation: text-pulse 2s infinite ease-in-out;
+        }
+
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--info-blue);
+            color: #0a0a0a;
+            font-weight: 900;
+            font-size: 0.75rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
         }
 
         @keyframes text-pulse {
@@ -327,6 +352,16 @@
 
             <div class="delivery-notice">
                 ⏱ Guaranteed delivery time between 5-25 minutes or a refund promised!
+            </div>
+
+            <!-- Blue Information Box -->
+            <div id="costa-notice">
+                <div class="notice-icon-wrapper">
+                    <span class="info-icon">i</span>
+                    <strong style="color:var(--info-blue)">NOTICE</strong>
+                </div>
+                <br>
+                Costa Has Restarted Their Promotion For A Frappe
             </div>
 
             <div id="greggs-notice">
@@ -492,6 +527,10 @@
                     cooldownText = 'COOLDOWN: None';
                 } else if (nameLower.includes('train tickets') || nameLower.includes('fast ticket')) {
                     cooldownText = 'COOLDOWN: None';
+                } else if (nameLower.includes('free greggs for 1 year')) {
+                    cooldownText = 'COOLDOWN: N/A';
+                } else if (nameLower.includes('costa cafe')) {
+                    cooldownText = 'COOLDOWN: 25 Minutes';
                 } else if (nameLower.includes('reserved')) {
                     cooldownText = 'COOLDOWN: 30 Minutes';
                 } else if (nameLower.includes('greggs')) {
