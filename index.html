@@ -13,6 +13,7 @@
             --text-dim: #888888;
             --in-stock: #00ff88; 
             --out-stock: #ff4444; 
+            --warning-orange: #f39c12;
             --glass: rgba(255, 255, 255, 0.03);
             --shine: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
             --info-blue: #00d4ff;
@@ -39,12 +40,30 @@
 
         .header-nav {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 15px;
             padding: 10px 5px;
             border-bottom: 1px solid #222;
         }
+
+        .nav-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sms-status-bar {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sms-label { color: var(--warning-orange); }
 
         .live-timer {
             font-size: 0.75rem;
@@ -164,18 +183,6 @@
             border: 1px solid var(--info-blue);
             border-radius: 16px;
             padding: 18px;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            position: relative;
-        }
-
-        #greggs-notice {
-            display: none;
-            background: rgba(255, 68, 68, 0.15);
-            border: 1px solid var(--out-stock);
-            border-radius: 16px;
-            padding: 18px;
             margin-bottom: 25px;
             font-size: 0.85rem;
             line-height: 1.5;
@@ -189,20 +196,6 @@
             margin-bottom: 6px;
         }
 
-        .pulse-exclamation {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--out-stock);
-            color: #0a0a0a;
-            font-weight: 900;
-            font-size: 0.75rem;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            animation: text-pulse 2s infinite ease-in-out;
-        }
-
         .info-icon {
             display: inline-flex;
             align-items: center;
@@ -214,12 +207,6 @@
             width: 16px;
             height: 16px;
             border-radius: 50%;
-        }
-
-        @keyframes text-pulse {
-            0% { transform: scale(1); box-shadow: 0 0 4px var(--out-stock); }
-            50% { transform: scale(1.2); box-shadow: 0 0 12px var(--out-stock); }
-            100% { transform: scale(1); box-shadow: 0 0 4px var(--out-stock); }
         }
 
         #loader-container { text-align: center; margin-top: 150px; }
@@ -338,10 +325,15 @@
             <div class="main-title">Live Stock</div>
 
             <div class="header-nav">
-                <div class="live-timer">
-                    NEXT RESTOCK WAVE: <span id="countdown-clock">00:00:00</span><span class="predicted-inline">* Predicted</span>
+                <div class="nav-top-row">
+                    <div class="live-timer">
+                        NEXT RESTOCK WAVE: <span id="countdown-clock">00:00:00</span><span class="predicted-inline">* Predicted</span>
+                    </div>
+                    <div class="cooldown-info">COOLDOWN RESET: £1</div>
                 </div>
-                <div class="cooldown-info">COOLDOWN RESET: £1</div>
+                <div class="sms-status-bar">
+                    SMS STATUS: <span class="sms-label">Slow/Unstable</span>
+                </div>
             </div>
 
             <div class="sort-bar">
@@ -354,23 +346,13 @@
                 ⏱ Guaranteed delivery time between 5-25 minutes or a refund promised!
             </div>
 
-            <!-- Blue Information Box -->
             <div id="costa-notice">
                 <div class="notice-icon-wrapper">
                     <span class="info-icon">i</span>
                     <strong style="color:var(--info-blue)">NOTICE</strong>
                 </div>
                 <br>
-                Costa Has Restarted Their Promotion For Any Free Drinks In Selected Locations
-            </div>
-
-            <div id="greggs-notice">
-                <div class="notice-icon-wrapper">
-                    <span class="pulse-exclamation">!</span>
-                    <strong style="color:var(--out-stock)">IMPORTANT NOTICE</strong>
-                </div>
-                <br>
-                Greggs accounts are removed Until June 7th. Note: On <span style="text-decoration:underline">June 7th</span>, prices will increase to £0.50.
+                Costa Has Restarted Their Promotion For A Frappe
             </div>
 
             <div id="list"></div>
@@ -457,9 +439,6 @@
                 });
                 document.getElementById('loader-container').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                if (rawData.some(i => i.name.toLowerCase().includes('greggs account') && i.stock === 'NO')) {
-                    document.getElementById('greggs-notice').style.display = 'block';
-                }
                 render();
             }).catch(err => {
                 console.log("Awaiting configuration file connection.");
